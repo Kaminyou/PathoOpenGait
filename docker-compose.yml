@@ -1,0 +1,28 @@
+version: '3'
+services:
+  frontend:
+    build: 
+      context: ./frontend/
+      dockerfile: frontend.Dockerfile
+    container_name: gait-web-frontend
+    working_dir: /home/kaminyou/repos/pathoopengait/frontend
+    ports:
+      - 31000:3000
+    depends_on:
+      - backend
+    stdin_open: true
+    tty: true
+    volumes:
+      - /home/kaminyou:/home/kaminyou
+  backend:
+    build:
+      context: ./backend/
+      dockerfile: backend.Dockerfile
+    container_name: gait-web-backend
+    working_dir: /home/kaminyou/repos/pathoopengait/backend
+    stdin_open: true
+    tty: true
+    ports:
+      - 32000:5000
+    volumes:
+      - /home/kaminyou:/home/kaminyou
