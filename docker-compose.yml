@@ -5,7 +5,7 @@ services:
       context: ./frontend/
       dockerfile: frontend.Dockerfile
     container_name: gait-web-frontend
-    working_dir: /home/kaminyou/repos/pathoopengait/frontend
+    working_dir: /home/kaminyou/repos/PathoOpenGait/frontend
     ports:
       - 31000:3000
     depends_on:
@@ -19,7 +19,7 @@ services:
       context: ./backend/
       dockerfile: backend.Dockerfile
     container_name: gait-web-backend
-    working_dir: /home/kaminyou/repos/pathoopengait/backend
+    working_dir: /home/kaminyou/repos/PathoOpenGait/backend
     stdin_open: true
     tty: true
     ports:
