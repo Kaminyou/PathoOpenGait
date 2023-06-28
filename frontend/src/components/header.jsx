@@ -1,4 +1,5 @@
 import React from "react";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 export const Header = (props) => {
   return (
@@ -17,7 +18,7 @@ export const Header = (props) => {
                   href="#features"
                   className="btn btn-custom btn-lg page-scroll"
                 >
-                  Learn More
+                  <Link style={{color: 'white'}} to={"/demo"}>Demo</Link>
                 </a>{" "}
               </div>
             </div>

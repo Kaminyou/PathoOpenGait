@@ -1,4 +1,5 @@
 import React from "react";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 export const Navigation = (props) => {
   return (
@@ -17,9 +18,10 @@ export const Navigation = (props) => {
             <span className="icon-bar"></span>{" "}
             <span className="icon-bar"></span>{" "}
           </button>
-          <a className="navbar-brand page-scroll" href="#page-top">
-            React Landing Page
-          </a>{" "}
+          <Link className="navbar-brand page-scroll" to={"/"}>PathoOpenGait</Link>{" "}
+          {/* <a className="navbar-brand page-scroll" href="#page-top">
+            PathoOpenGait
+          </a>{" "} */}
         </div>
 
         <div
@@ -27,7 +29,16 @@ export const Navigation = (props) => {
           id="bs-example-navbar-collapse-1"
         >
           <ul className="nav navbar-nav navbar-right">
-            <li>
+            <li className="nav-item">
+              <Link to={"/demo"}>Demo</Link>
+            </li>
+            <li className="nav-item">
+              <Link to={"/login"}>Login</Link>
+            </li>
+            <li className="nav-item">
+              <Link to={"/contact"}>Contact</Link>
+            </li>
+            {/* <li>
               <a href="#features" className="page-scroll">
                 Features
               </a>
@@ -61,7 +72,7 @@ export const Navigation = (props) => {
               <a href="#contact" className="page-scroll">
                 Contact
               </a>
-            </li>
+            </li> */}
           </ul>
         </div>
       </div>

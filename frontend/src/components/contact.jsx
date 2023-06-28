@@ -2,6 +2,8 @@ import { useState } from "react";
 import emailjs from "emailjs-com";
 import React from "react";
 
+import config from "../config.json";
+
 const initialState = {
   name: "",
   email: "",
@@ -20,7 +22,7 @@ export const Contact = (props) => {
     e.preventDefault();
     console.log(name, email, message);
     emailjs
-      .sendForm("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", e.target, "YOUR_USER_ID")
+      .sendForm(config.EMAILJS_SERVICE_ID, config.EMAILJS_TEMPLATE_ID, e.target, config.EMAILJS_PUBLIC_KEY)
       .then(
         (result) => {
           console.log(result.text);
@@ -126,18 +128,13 @@ export const Contact = (props) => {
               <div className="social">
                 <ul>
                   <li>
-                    <a href={props.data ? props.data.facebook : "/"}>
-                      <i className="fa fa-facebook"></i>
+                    <a href={props.data ? props.data.linkedin : "/"}>
+                      <i className="fa fa-linkedin"></i>
                     </a>
                   </li>
                   <li>
-                    <a href={props.data ? props.data.twitter : "/"}>
-                      <i className="fa fa-twitter"></i>
-                    </a>
-                  </li>
-                  <li>
-                    <a href={props.data ? props.data.youtube : "/"}>
-                      <i className="fa fa-youtube"></i>
+                    <a href={props.data ? props.data.github : "/"}>
+                      <i className="fa fa-github"></i>
                     </a>
                   </li>
                 </ul>
@@ -149,9 +146,9 @@ export const Contact = (props) => {
       <div id="footer">
         <div className="container text-center">
           <p>
-            &copy; 2023 Issaaf Kattan React Land Page Template. Design by{" "}
-            <a href="http://www.templatewire.com" rel="nofollow">
-              TemplateWire
+            &copy; 2023 PathoOpenGait. Design by{" "}
+            <a href="https://kaminyou.com/" rel="nofollow">
+              Ming-Yang Ho
             </a>
           </p>
         </div>

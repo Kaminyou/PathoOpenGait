@@ -14,7 +14,7 @@ h4 {
   font-family: "Raleway", sans-serif;
 }
 h2 {
-  text-transform: uppercase;
+  /*text-transform: uppercase;*/
   margin: 0 0 20px;
   font-weight: 800;
   font-size: 36px;
@@ -31,7 +31,7 @@ h4 {
   font-weight: 600;
 }
 h5 {
-  text-transform: uppercase;
+  /*text-transform: uppercase;*/
   font-weight: 700;
   line-height: 20px;
 }
@@ -72,7 +72,7 @@ hr {
 }
 /* Navigation */
 #menu {
-  padding: 15px;
+  padding: 10px;
   transition: all 0.8s;
 }
 #menu.navbar-default {
@@ -85,7 +85,7 @@ hr {
   font-size: 24px;
   font-weight: 700;
   color: #333;
-  text-transform: uppercase;
+  /*text-transform: uppercase;*/
 }
 #menu.navbar-default .navbar-nav > li > a {
   font-family: "Lato", sans-serif;
@@ -208,8 +208,8 @@ a:focus,
   display: table;
   width: 100%;
   padding: 0;
-  background: url(../img/intro-bg.jpg) center center no-repeat;
-  background-color: #e5e5e5;
+  background: url(../img/intro-bg.png) center center no-repeat;
+  background-color: rgba(0,0,0,0.25);
   -webkit-background-size: cover;
   -moz-background-size: cover;
   background-size: cover;
@@ -223,7 +223,7 @@ a:focus,
   color: #fff;
   font-size: 82px;
   font-weight: 700;
-  text-transform: uppercase;
+  /*text-transform: uppercase;*/
   margin-top: 0;
   margin-bottom: 10px;
 }
