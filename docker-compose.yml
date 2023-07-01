@@ -19,6 +19,13 @@ services:
       context: ./backend/
       dockerfile: backend.Dockerfile
     container_name: gait-web-backend
+    environment:
+      - FLASK_DEBUG=1
+      - APP_SETTINGS=project.server.config.DevelopmentConfig
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - SQLALCHEMY_DATABASE_URI=${SQLALCHEMY_DATABASE_URI}
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
     working_dir: /home/kaminyou/repos/PathoOpenGait/backend
     stdin_open: true
     tty: true
@@ -26,3 +33,15 @@ services:
       - 32000:5000
     volumes:
       - /home/kaminyou:/home/kaminyou
+    depends_on:
+      - db
+  db:
+    image: mysql:8
+    container_name: gait-web-db
+    command: mysqld --default-authentication-plugin=mysql_native_password
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    ports:
+      - 33000:3306
+    volumes:
+      - ./database/sql:/docker-entrypoint-initdb.d
