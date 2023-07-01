@@ -1,9 +1,9 @@
-from fastapi import FastAPI, APIRouter, HTTPException
+from flask import Blueprint
 
-router = APIRouter()
+demo_api = Blueprint('demo', __name__)
 
 
-@router.get('/patient/info')
+@demo_api.route('/patient/info', methods=['GET'])
 def demo_patient_info() -> dict:
     data = {
         'msg': 'success',
@@ -18,7 +18,7 @@ def demo_patient_info() -> dict:
 
     return data
 
-@router.get('/patient/gait/data')
+@demo_api.route('/patient/gait/data', methods=['GET'])
 def demo_gait_data() -> dict:
     data = {
         'msg': 'success',
@@ -55,7 +55,7 @@ def demo_gait_data() -> dict:
     return data
 
 
-@router.get('/patient/gait/unit')
+@demo_api.route('/patient/gait/unit', methods=['GET'])
 def demo_gait_unit() -> dict:
     data = {
         'msg': 'success',

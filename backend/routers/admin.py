@@ -1,10 +1,8 @@
-from fastapi import FastAPI, APIRouter, HTTPException
+from flask import Blueprint
 
-router = APIRouter()
+admin_api = Blueprint('admin', __name__)
 
 
-@router.get('/whoami')
-def admin_info() -> dict:
-    return {
-        'msg': 'i am admin'
-    }
+@admin_api.route("/whoami", methods=['GET'])
+def admin_whoami():
+  return {'msg': 'admin'}
