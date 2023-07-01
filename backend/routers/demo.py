@@ -18,6 +18,7 @@ def demo_patient_info() -> dict:
 
     return data
 
+
 @demo_api.route('/patient/gait/data', methods=['GET'])
 def demo_gait_data() -> dict:
     data = {
