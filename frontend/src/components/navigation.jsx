@@ -1,7 +1,8 @@
 import React from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { HashLink } from 'react-router-hash-link';
 
-export const Navigation = (props) => {
+function Navigation({ token }) {
   return (
     <nav id="menu" className="navbar navbar-default navbar-fixed-top">
       <div className="container">
@@ -18,7 +19,7 @@ export const Navigation = (props) => {
             <span className="icon-bar"></span>{" "}
             <span className="icon-bar"></span>{" "}
           </button>
-          <Link className="navbar-brand page-scroll" to={"/"}>PathoOpenGait</Link>{" "}
+          <HashLink className="navbar-brand page-scroll" smooth to="/#header">PathoOpenGait</HashLink>
           {/* <a className="navbar-brand page-scroll" href="#page-top">
             PathoOpenGait
           </a>{" "} */}
@@ -28,7 +29,8 @@ export const Navigation = (props) => {
           className="collapse navbar-collapse"
           id="bs-example-navbar-collapse-1"
         >
-          <ul className="nav navbar-nav navbar-right">
+          {!token && token!=="" &&token!== undefined ? (
+            <ul className="nav navbar-nav navbar-right">
             <li className="nav-item">
               <Link to={"/demo"}>Demo</Link>
             </li>
@@ -36,8 +38,27 @@ export const Navigation = (props) => {
               <Link to={"/login"}>Login</Link>
             </li>
             <li className="nav-item">
-              <Link to={"/contact"}>Contact</Link>
+              <HashLink smooth to="/#contact" className="page-scroll">
+                Contact
+              </HashLink>
             </li>
+            </ul>
+          ):(
+            <ul className="nav navbar-nav navbar-right">
+            <li className="nav-item">
+              <Link to={"/demo"}>Demo</Link>
+            </li>
+            <li className="nav-item">
+              <Link to={"/logout"}>Logout</Link>
+            </li>
+            <li className="nav-item">
+              <HashLink smooth to="/#contact" className="page-scroll">
+                Contact
+              </HashLink>
+            </li>
+            </ul>
+          )}
+          
             {/* <li>
               <a href="#features" className="page-scroll">
                 Features
@@ -73,9 +94,10 @@ export const Navigation = (props) => {
                 Contact
               </a>
             </li> */}
-          </ul>
         </div>
       </div>
     </nav>
   );
 };
+
+export default Navigation

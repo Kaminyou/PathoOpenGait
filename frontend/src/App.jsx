@@ -1,29 +1,40 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import { Navigation } from "./components/navigation";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Navigation from "./components/navigation";
 import SmoothScroll from "smooth-scroll";
 import "./App.css";
-import MainPage from "./containers/main"
-import DemoPage from "./containers/demo";
+import MainPage from './containers/main'
+import DemoPage from './containers/demo'
+import LoginPage from './containers/login'
+import LogoutPage from './containers/logout'
+import useToken from './components/useToken'
 
 export const scroll = new SmoothScroll('a[href*="#"]', {
   speed: 1000,
   speedAsDuration: true,
 });
 
-const App = () => {
+function App() {
+
+  const { token, removeToken, setToken } = useToken();
 
   return (
     <div>
       <Router>
-        <Navigation />
+        <Navigation token={token} />
         <div>
         <Switch>
           <Route exact path='/'>
-            <MainPage token={123} />
+            <MainPage token={token} />
           </Route>
           <Route exact path='/demo'>
-            <DemoPage token={123} />
+            <DemoPage token={token} />
+          </Route>
+          <Route exact path='/login'>
+            <LoginPage setToken={setToken} />
+          </Route>
+          <Route exact path='/logout'>
+            <LogoutPage removeToken={removeToken} />
           </Route>
         </Switch>
       </div>

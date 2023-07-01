@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-import { Link } from "react-router-dom";
-import config from "../config.json";
 import { Header } from "../components/header";
 import { Features } from "../components/features";
 import { About } from "../components/about";
