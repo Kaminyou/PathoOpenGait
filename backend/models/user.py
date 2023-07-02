@@ -5,7 +5,7 @@ from enums.user import UserCategoryEnum
 
 
 class UserModel(db.Model):
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
     account = db.Column(db.String(80), nullable=False, unique=True)
