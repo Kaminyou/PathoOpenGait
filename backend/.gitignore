@@ -1,1 +1,7 @@
 __pycache__/
+*.log
+data/
+*.pth
+*.bin
+test_gait.py
+.inferenece/test_gait.py
