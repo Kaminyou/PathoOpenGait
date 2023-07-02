@@ -667,3 +667,6 @@ label {
 .center-text {
   text-align: center;
 }
+.padding-block {
+  padding: 100px 0;
+}

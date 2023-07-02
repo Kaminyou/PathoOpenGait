@@ -7,6 +7,7 @@ import MainPage from './containers/main'
 import DemoPage from './containers/demo'
 import LoginPage from './containers/login'
 import LogoutPage from './containers/logout'
+import UploadPage from './containers/upload'
 import useToken from './components/useToken'
 
 export const scroll = new SmoothScroll('a[href*="#"]', {
@@ -35,6 +36,9 @@ function App() {
           </Route>
           <Route exact path='/logout'>
             <LogoutPage removeToken={removeToken} />
+          </Route>
+          <Route exact path='/upload'>
+            <UploadPage token={token} />
           </Route>
         </Switch>
       </div>

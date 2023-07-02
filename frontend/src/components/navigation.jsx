@@ -127,7 +127,7 @@ function Navigation({ token }) {
                     <Link to={"/demo"}>Profile</Link>
                   </li>
                   <li className="nav-item">
-                    <Link to={"/demo"}>Upload</Link>
+                    <Link to={"/upload"}>Upload</Link>
                   </li>
                   <li className="nav-item">
                     <Link to={"/demo"}>Dashboard</Link>
