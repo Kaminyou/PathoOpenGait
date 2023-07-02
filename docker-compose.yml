@@ -5,7 +5,7 @@ services:
       context: ./frontend/
       dockerfile: frontend.Dockerfile
     container_name: gait-web-frontend
-    working_dir: /home/kaminyou/repos/PathoOpenGait/frontend
+    working_dir: /root/frontend
     ports:
       - 31000:3000
     depends_on:
@@ -13,8 +13,9 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - /home/kaminyou:/home/kaminyou
+      - /home/kaminyou/repos/PathoOpenGait/frontend:/root/frontend
   backend:
+    image: gait-web-backend:latest
     build:
       context: ./backend/
       dockerfile: backend.Dockerfile
@@ -26,13 +27,18 @@ services:
       - SQLALCHEMY_DATABASE_URI=${SQLALCHEMY_DATABASE_URI}
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
-    working_dir: /home/kaminyou/repos/PathoOpenGait/backend
+    working_dir: /root/backend
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
     stdin_open: true
     tty: true
     ports:
       - 32000:5000
     volumes:
-      - /home/kaminyou:/home/kaminyou
+      - /home/kaminyou/repos/PathoOpenGait/backend:/root/backend
     depends_on:
       - db
   db:
@@ -45,3 +51,56 @@ services:
       - 33000:3306
     volumes:
       - ./database/sql:/docker-entrypoint-initdb.d
+  redis:
+    image: redis:6-alpine
+    container_name: gait-web-redis
+  worker:
+    image: gait-web-backend:latest
+    container_name: gait-web-worker
+    command: celery --app inference.tasks.celery worker -P solo --loglevel=info --logfile=inference/logs/celery.log
+    volumes:
+      - /home/kaminyou/repos/PathoOpenGait/backend:/root/backend
+    working_dir: /root/backend
+    environment:
+      - FLASK_DEBUG=1
+      - APP_SETTINGS=project.server.config.DevelopmentConfig
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - SQLALCHEMY_DATABASE_URI=${SQLALCHEMY_DATABASE_URI}
+      - RESULT_DIR=/root/backend/data/
+      - CUDA_DEVICE_ORDER=PCI_BUS_ID
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    depends_on:
+      - frontend
+      - backend
+      - db
+      - redis
+  dashboard:
+    image: gait-web-backend:latest
+    container_name: gait-web-dashboard
+    working_dir: /root/backend
+    command: celery --app inference.tasks.celery flower --port=5555 --broker=redis://redis:6379/0
+    ports:
+      - 24000:5555
+    volumes:
+      - /home/kaminyou/repos/PathoOpenGait/backend:/root/backend
+    environment:
+      - FLASK_DEBUG=1
+      - APP_SETTINGS=project.server.config.DevelopmentConfig
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    depends_on:
+      - frontend
+      - backend
+      - db
+      - redis
+      - worker
