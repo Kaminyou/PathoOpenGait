@@ -17,6 +17,8 @@ class RequestModel(db.Model):
     date = db.Column(db.DateTime, default=db.func.current_timestamp())
     description = db.Column(db.String(200), nullable=False)
 
+    toShow = db.Column(db.Boolean, nullable=False, default=True)
+
     status = db.Column(db.Enum(Status), nullable=False, default=Status.INQUEUE)
     statusInfo = db.Column(db.String(80))
     dateUpload = db.Column(db.DateTime, default=db.func.current_timestamp())
