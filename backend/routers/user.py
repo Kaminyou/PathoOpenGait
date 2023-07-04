@@ -9,7 +9,7 @@ from schemas.request import RequestSchema
 from schemas.profile import ProfileSchema
 from inference.tasks import inference_gait_task
 from security import get_sha256
-from parsers.parser import parse_personal_profile
+from parsers.parser import parse_personal_profile, parse_request_instances
 
 requestSchema = RequestSchema()
 profileSchema = ProfileSchema()
@@ -50,22 +50,15 @@ def upload_gait_csv():
 
         if user_instance is None:
             return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
-        
+
         form_data = requestSchema.load(request.form)
         form_data.update({"account": account})
         request_obj = RequestModel(**form_data)
-        
 
         submit_uuid = request_obj.submitUUID
 
-
         csv_file = request.files['csvFile']
         mp4_file = request.files['mp4File']
-        # username = request.form.get('username')
-        # birthday = request.form.get('birthday')
-        # height = request.form.get('height')
-        # description = request.form.get('description')
-        # print(username, birthday, height, description)
 
         data_root = f'data/{submit_uuid}'
         os.makedirs(data_root)
@@ -91,6 +84,35 @@ def upload_gait_csv():
 
         return (
             {'msg': 'File uploaded successfully'},
+            HTTPStatus.OK,
+        )
+
+    except Exception as e:
+        user_api.logger.info(f'{account} trigger exception {e}')
+        return (
+            {'msg': 'Error'},
+            HTTPStatus.FORBIDDEN,
+        )
+
+
+@user_api.route('/request/status', methods=['GET'])
+@jwt_required()
+def request_status():
+    try:
+        account = get_jwt_identity()
+        user_instance = UserModel.find_by_account(account=account)
+
+        if user_instance is None:
+            return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
+
+        request_objects = RequestModel.find_by_account(account=account)
+        request_status_data = parse_request_instances(request_objects)
+        
+        return (
+            {
+                'msg': 'success',
+                'records': request_status_data,
+            },
             HTTPStatus.OK,
         )
 

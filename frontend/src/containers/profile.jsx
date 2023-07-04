@@ -123,6 +123,12 @@ function ProfilePage({ token }) {
   };
 
 
+  const handleShowPasswordChange = (event) => {
+    event.preventDefault();
+    setShowDialog(true);
+  };
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -177,18 +183,19 @@ function ProfilePage({ token }) {
       <div className="row">
           <div className="col-xs-12 col-md-10">
             <div className="about-text">
-              <form onSubmit={handleSubmit} className="form-horizontal">
-              <div className="form-group">
-
+              <form className="form-horizontal">
+                <div className="form-group">
                 <label className="col-sm-2 control-label">Password</label>
                 <div className="col-sm-10">
-                <button className="btn btn-primary" onClick={() => setShowDialog(true)}>
+                <button type="button" className="btn btn-primary" onClick={handleShowPasswordChange}>
                   Change Password
                 </button>
                 </div>
-                
-                <hr id='normal-hr'/>
-
+              </div>
+              </form>
+              <hr id='normal-hr'/>
+              <form className="form-horizontal">
+              <div className="form-group">
                 <label className="col-sm-2 control-label">Name</label>
                 <div className="col-sm-10">
                     <input
@@ -293,47 +300,47 @@ function ProfilePage({ token }) {
                 </div>
                 <div className="form-group">
                   <div className="col-sm-offset-2 col-sm-10">
-                    <button type="submit" className="btn btn-primary" disabled={loading}>{loading ? 'Uploading...' : 'Upload'}</button>
+                    <button onClick={handleSubmit} type="submit" className="btn btn-primary" disabled={loading}>{loading ? 'Updating...' : 'Update'}</button>
                   </div>
                 </div>
 
               </form>
               
 
-            {showDialog && (
-              <div className="modal show" tabIndex="-1" role="dialog" style={{ display: 'block' }}>
-                <div className="modal-dialog" role="document">
-                  <div className="modal-content">
-                    <div className="modal-header">
-                      <button type="button" className="close" onClick={handleClose}>
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                      <h4 className="modal-title">Change Password</h4>
-                    </div>
-                    <div className="modal-body">
-                      <div className="form-group">
-                        <label>New Password</label>
-                        <input
-                          type="password"
-                          className="form-control"
-                          placeholder="Enter new password"
-                          value={password}
-                          onChange={handlePasswordChange}
-                        />
+              {showDialog && (
+                <div className="modal show" tabIndex="-1" role="dialog" style={{ display: 'block' }}>
+                  <div className="modal-dialog" role="document">
+                    <div className="modal-content">
+                      <div className="modal-header">
+                        <button type="button" className="close" onClick={handleClose}>
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 className="modal-title">Change Password</h4>
                       </div>
-                    </div>
-                    <div className="modal-footer">
-                      <button type="button" className="btn btn-default" onClick={handleClose}>
-                        Cancel
-                      </button>
-                      <button type="button" className="btn btn-primary" onClick={handleChangePassword}>
-                        Save Changes
-                      </button>
+                      <div className="modal-body">
+                        <div className="form-group">
+                          <label>New Password</label>
+                          <input
+                            type="password"
+                            className="form-control"
+                            placeholder="Enter new password"
+                            value={password}
+                            onChange={handlePasswordChange}
+                          />
+                        </div>
+                      </div>
+                      <div className="modal-footer">
+                        <button type="button" className="btn btn-default" onClick={handleClose}>
+                          Cancel
+                        </button>
+                        <button type="button" className="btn btn-primary" onClick={handleChangePassword}>
+                          Save Changes
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
             </div>
           </div>
         </div>
