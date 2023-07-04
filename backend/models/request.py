@@ -14,6 +14,8 @@ class RequestModel(db.Model):
     # model and data info
     dataType = db.Column(db.String(100), nullable=False)
     modelName = db.Column(db.String(100), nullable=False)
+    date = db.Column(db.DateTime, default=db.func.current_timestamp())
+    description = db.Column(db.String(200), nullable=False)
 
     status = db.Column(db.Enum(Status), nullable=False, default=Status.INQUEUE)
     statusInfo = db.Column(db.String(80))

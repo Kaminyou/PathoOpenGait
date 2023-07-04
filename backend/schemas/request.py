@@ -8,6 +8,8 @@ from security import get_uuid
 class RequestSchema(Schema):
     dataType = fields.Str(required=True, validate=Length(max=100))
     modelName = fields.Str(required=True, validate=Length(max=100))
+    date = fields.Date(required=True)
+    description = fields.Str(required=False, validate=Length(max=200))
 
     @post_load
     def add_uuid(self, data, **kwargs):

@@ -1,15 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import swal from "sweetalert";
 
 import UnauthorizedPage from "../components/unauthorizedPage";
 
 function UploadPage({ token }) {
+  const [expanded, setExpanded] = useState(false);
 
   const [csvFile, setCSVFile] = useState(null);
   const [mp4File, setMP4File] = useState(null);
   const [loading, setLoading] = useState(false);
   const [dataType, setDataType] = useState('gait');
   const [modelName, setModelName] = useState('gait_basic');
+
+  const [date, setDate] = useState('');
+  const [description, setDescription] = useState('');
+
+  useEffect(() => {
+    const today = new Date();
+    const formattedDate = today.toISOString().substr(0, 10);
+    setDate(formattedDate);
+  }, []);
+
+  const handleExpand = () => {
+    setExpanded(!expanded);
+  };
 
   const handleCSVFileChange = (e) => {
     setCSVFile(e.target.files[0]);
@@ -27,6 +42,15 @@ function UploadPage({ token }) {
     setModelName(e.target.value);
   };
 
+  const handleDateChange = (event) => {
+    setDate(event.target.value);
+  };
+
+  const handleDescriptionChange = (event) => {
+    setDescription(event.target.value);
+  };
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -34,6 +58,8 @@ function UploadPage({ token }) {
     formData.append('mp4File', mp4File);
     formData.append('dataType', dataType);
     formData.append('modelName', modelName);
+    formData.append('date', date);
+    formData.append('description', description);
 
     const headers = {
       Authorization: 'Bearer ' + token
@@ -45,12 +71,22 @@ function UploadPage({ token }) {
       .then(response => {
         console.log(response.data); // Handle the response from the backend
         setLoading(false); // Set loading back to false after successful upload
-        alert('Upload successful');
+        swal({
+          title: "Success",
+          text: "Submit Success!",
+          icon: "success",
+        });
+    
       })
       .catch(error => {
         console.error(error);
         setLoading(false); // Set loading back to false after upload failure
-        alert('Upload failed');
+        swal({
+          title: "Error",
+          text: "Submit failed",
+          icon: "error",
+        });
+  
       });
   };
 
@@ -69,17 +105,52 @@ function UploadPage({ token }) {
             <div className="about-text">
               <form onSubmit={handleSubmit} className="form-horizontal">
                 <div className="form-group">
-                  <label className="col-sm-2 control-label">Data Type</label>
+                  <label className="col-sm-2 control-label">Date</label>
                   <div className="col-sm-10">
-                    <input type="text" className="form-control" placeholder="Datatype" value={dataType} onChange={handleDataTypeChange} />
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Date"
+                      value={date}
+                      onChange={handleDateChange}
+                    />
                   </div>
                 </div>
                 <div className="form-group">
-                  <label className="col-sm-2 control-label">Model Name</label>
+                  <label className="col-sm-2 control-label">Description</label>
                   <div className="col-sm-10">
-                    <input type="text" className="form-control" placeholder="Model Name" value={modelName} onChange={handleModelNameChange} />
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Description"
+                      value={description}
+                      onChange={handleDescriptionChange}
+                    />
                   </div>
                 </div>
+                <div className="form-group">
+                  <div className="col-sm-offset-2 col-sm-10">
+                    <button type="button" className="btn btn-secondary" onClick={handleExpand}>
+                      {expanded ? 'Hide details' : 'Show details'}
+                    </button>
+                  </div>
+                </div>
+                {expanded && (
+                  <>
+                    <div className="form-group">
+                      <label className="col-sm-2 control-label">Data Type</label>
+                      <div className="col-sm-10">
+                        <input disabled={true} type="text" className="form-control" placeholder="Datatype" value={dataType} onChange={handleDataTypeChange} />
+                      </div>
+                    </div>
+                    <div className="form-group">
+                      <label className="col-sm-2 control-label">Model Name</label>
+                      <div className="col-sm-10">
+                        <input disabled={true} type="text" className="form-control" placeholder="Model Name" value={modelName} onChange={handleModelNameChange} />
+                      </div>
+                    </div>
+                  </>
+                )}
                 <div className="form-group">
                   <label className="col-sm-2 control-label">CSV File</label>
                   <div className="col-sm-10">

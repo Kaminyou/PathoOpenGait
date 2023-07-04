@@ -124,7 +124,7 @@ function Navigation({ token }) {
                 'general': (
                   <ul className="nav navbar-nav navbar-right">
                   <li className="nav-item">
-                    <Link to={"/demo"}>Profile</Link>
+                    <Link to={"/profile"}>Profile</Link>
                   </li>
                   <li className="nav-item">
                     <Link to={"/upload"}>Upload</Link>
