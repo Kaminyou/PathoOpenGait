@@ -4,6 +4,7 @@ from datetime import datetime
 
 PERSON_PROFILE_KEY = {
     'name': str,
+    'gender': str,
     'birthday': lambda x: x.strftime("%Y-%m-%d"),
     'diagnose': str,
     'stage': str,

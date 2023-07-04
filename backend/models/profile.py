@@ -11,6 +11,7 @@ class ProfileModel(db.Model):
     updateUUID = db.Column(db.CHAR(36), nullable=False, unique=True)
 
     name = db.Column(db.String(100), nullable=True)
+    gender = db.Column(db.String(100), nullable=True)
     birthday = db.Column(db.DateTime, nullable=True)
     diagnose = db.Column(db.String(100), nullable=True)
     stage = db.Column(db.String(100), nullable=True)

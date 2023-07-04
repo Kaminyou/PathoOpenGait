@@ -9,6 +9,7 @@ function ProfilePage({ token }) {
   const [loading, setLoading] = useState(false);
 
   const [name, setName] = useState('');
+  const [gender, setGender] = useState('');
   const [birthday, setBirthday] = useState('');
 
   const [diagnose, setDiagnose] = useState('');
@@ -32,6 +33,7 @@ function ProfilePage({ token }) {
     .then((res) => {
       //console.log(res.data.profile)
       setName(res.data.profile['name'])
+      setGender(res.date.profile['gender'])
       setBirthday(res.data.profile['birthday'])
       setDiagnose(res.data.profile['diagnose'])
       setStage(res.data.profile['stage'])
@@ -92,6 +94,10 @@ function ProfilePage({ token }) {
     setName(event.target.value);
   };
   
+  const handleGenderChange = (event) => {
+    setGender(event.target.value);
+  };
+  
   const handleBirthdayChange = (event) => {
     setBirthday(event.target.value);
   };
@@ -121,6 +127,7 @@ function ProfilePage({ token }) {
     e.preventDefault();
     const formData = new FormData();
     formData.append('name', name);
+    formData.append('gender', gender);
     formData.append('birthday', birthday);
     formData.append('diagnose', diagnose);
     formData.append('stage', stage);
@@ -190,6 +197,19 @@ function ProfilePage({ token }) {
                     placeholder="Name"
                     value={name}
                     onChange={handleNameChange}
+                    />
+                </div>
+                </div>
+
+                <div className="form-group">
+                <label className="col-sm-2 control-label">Gender</label>
+                <div className="col-sm-10">
+                    <input
+                    type="text"
+                    className="form-control"
+                    placeholder="gender"
+                    value={gender}
+                    onChange={handleGenderChange}
                     />
                 </div>
                 </div>

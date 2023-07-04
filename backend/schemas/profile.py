@@ -7,6 +7,7 @@ from security import get_uuid
 
 class ProfileSchema(Schema):
     name = fields.Str(allow_none=True, validate=Length(max=100))
+    gender = fields.Str(allow_none=True, validate=Length(max=100))
     birthday = fields.Date(allow_none=True)
     diagnose = fields.Str(allow_none=True, validate=Length(max=100))
     stage = fields.Str(allow_none=True, validate=Length(max=100))
