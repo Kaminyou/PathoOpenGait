@@ -5,13 +5,14 @@ import typing as t
 import pandas as pd
 
 from .gait_study_semi_turn_time.inference import simple_inference
+from .._analyzer import Analyzer
 
 
 def avg(l, r, nl, nr):
     return (l * nl + r * nr) / (nl + nr)
 
 
-class BasicGaitAnalyzer:
+class BasicGaitAnalyzer(Analyzer):
     def __init__(
         self,
         pretrained_path: str = 'algorithms/gait_basic/gait_study_semi_turn_time/weights/semi_vanilla_v2/epoch_94.pth',
