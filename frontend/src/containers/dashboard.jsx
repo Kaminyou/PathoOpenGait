@@ -54,14 +54,6 @@ function DashBoardPage({ token }) {
   const handleOptionChange = (event) => {
     let newSelection = event.target.value
     setSelectedOption(newSelection);
-    // let extractedDate = gaitData.map(item => item['date']);
-    // let extractedValues = gaitData.map(item => item[newSelection]);
-    // let data = {
-    //   'label': newSelection,
-    //   'dates': extractedDate,
-    //   'values': extractedValues
-    // }
-    // setDataToPlot(data)
   };
 
   const fetchDefault = async () => {
@@ -237,7 +229,6 @@ function DashBoardPage({ token }) {
               {dataToPlot === null ? <></> : <LinePlot dataToPlot={dataToPlot}/>}
               <ColumnGroupingTable columns={dashboard_columns} data={results} TopHeader={TopHeader} token={token}/>
             </div>
-            
           </div>
         </div>
       </div>
