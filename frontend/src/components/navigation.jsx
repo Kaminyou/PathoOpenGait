@@ -103,7 +103,7 @@ function Navigation({ token }) {
                 'manager': (
                   <ul className="nav navbar-nav navbar-right">
                   <li className="nav-item">
-                    <Link to={"/demo"}>Manage</Link>
+                    <Link to={"/manage"}>Manage</Link>
                   </li>
                   <li className="nav-item">
                     <Link to={"/logout"}>Logout</Link>

@@ -78,3 +78,15 @@ def parse_user_instance(user_instance):
     response['account'] = user_instance.__dict__['account']
     response['category'] = user_instance.__dict__['category'].name
     return response
+
+def parse_subordinate_instances(subordinate_instances):
+    response = []
+    for subordinate_instance in subordinate_instances:
+        if subordinate_instance.__dict__['exist']:
+            response.append(parse_subordinate_instance(subordinate_instance))
+    return response
+
+def parse_subordinate_instance(subordinate_instance):
+    response = {}
+    response['subordinate'] = subordinate_instance.__dict__['subordinate']
+    return response

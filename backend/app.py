@@ -12,6 +12,7 @@ from routers.admin import admin_api
 from routers.demo import demo_api
 from routers.token import token_api
 from routers.user import user_api
+from routers.manager import manager_api
 
 app = Flask(__name__)
 app.config["JWT_SECRET_KEY"] = os.getenv('JWT_SECRET_KEY',)
@@ -57,6 +58,7 @@ app.register_blueprint(admin_api, url_prefix='/api/admin')
 app.register_blueprint(demo_api, url_prefix='/api/demo')
 app.register_blueprint(token_api, url_prefix='/api/token')
 app.register_blueprint(user_api, url_prefix='/api/user')
+app.register_blueprint(manager_api, url_prefix='/api/manage')
 
 
 if __name__ == '__main__':
