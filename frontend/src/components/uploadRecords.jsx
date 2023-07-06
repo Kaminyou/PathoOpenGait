@@ -6,6 +6,7 @@ import ColumnGroupingTable from '../components/ColumnGroupingTable'
 
 function UploadRecords({ token }) {
   const [records, setRecords] = useState([]);
+  const MINUTE_MS = 2000; // 2 sec
 
   const fetchRecords = async () => {
     await axios.get("/api/user/request/status", {
@@ -22,6 +23,14 @@ function UploadRecords({ token }) {
   useEffect(() => {
     fetchRecords();
   }, [])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchRecords();
+      }, MINUTE_MS);
+    return () => clearInterval(interval);
+  }, [])
+
 
   const TopHeader = (
     <TableRow>
