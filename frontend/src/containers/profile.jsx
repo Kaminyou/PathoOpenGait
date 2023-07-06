@@ -26,20 +26,20 @@ function ProfilePage({ token }) {
     setPassword('');
   };
 
-  const fetchDefault = async () => {
-    await axios.get("/api/user/profile/personal", {
+  const fetchDefault = () => {
+    axios.get("/api/user/profile/personal", {
       headers: {Authorization: 'Bearer ' + token}
     })
     .then((res) => {
-      //console.log(res.data.profile)
-      setName(res.data.profile['name'])
-      setGender(res.date.profile['gender'])
-      setBirthday(res.data.profile['birthday'])
-      setDiagnose(res.data.profile['diagnose'])
-      setStage(res.data.profile['stage'])
-      setDominantSide(res.data.profile['dominantSide'])
-      setLDED(res.data.profile['lded'])
-      setDescription(res.data.profile['description'])
+      const { name, gender, birthday, diagnose, stage, dominantSide, lded, description } = res.data.profile;
+      setName(name);
+      setGender(gender);
+      setBirthday(birthday);
+      setDiagnose(diagnose);
+      setStage(stage);
+      setDominantSide(dominantSide);
+      setLDED(lded);
+      setDescription(description);
     })
     .catch((error) => {
       console.error(error);
