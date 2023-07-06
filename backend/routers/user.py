@@ -4,6 +4,7 @@ from http import HTTPStatus
 from flask import current_app, Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
+from enums.request import Status
 from models import UserModel, RequestModel, ProfileModel, ResultModel
 from schemas.request import RequestSchema
 from schemas.profile import ProfileSchema
@@ -131,6 +132,8 @@ def request_results():
         request_objects = RequestModel.find_by_account_and_sort_by_exp_date(account=account)
         results = []
         for request_object in request_objects:
+            if request_object.__dict__['status'] != Status.DONE:
+                continue
             sub_results = {}
             sub_results['dateUpload'] = request_object.__dict__['dateUpload'].strftime("%Y-%m-%d")
             sub_results['date'] = request_object.__dict__['date'].strftime("%Y-%m-%d")
@@ -145,7 +148,6 @@ def request_results():
                 sub_results[k] = v
             results.append(sub_results)
         
-        print(results)
         return (
             {
                 'msg': 'success',
