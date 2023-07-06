@@ -91,9 +91,6 @@ function Navigation({ token }) {
                     <Link to={"/demo"}>Admin</Link>
                   </li>
                   <li className="nav-item">
-                    <Link to={"/demo"}>Demo</Link>
-                  </li>
-                  <li className="nav-item">
                     <Link to={"/logout"}>Logout</Link>
                   </li>
                   <li className="nav-item">
@@ -107,9 +104,6 @@ function Navigation({ token }) {
                   <ul className="nav navbar-nav navbar-right">
                   <li className="nav-item">
                     <Link to={"/demo"}>Manage</Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link to={"/demo"}>Demo</Link>
                   </li>
                   <li className="nav-item">
                     <Link to={"/logout"}>Logout</Link>
@@ -131,9 +125,6 @@ function Navigation({ token }) {
                   </li>
                   <li className="nav-item">
                     <Link to={"/dashboard"}>Dashboard</Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link to={"/demo"}>Demo</Link>
                   </li>
                   <li className="nav-item">
                     <Link to={"/logout"}>Logout</Link>
