@@ -2,7 +2,7 @@ import { Line } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
 
-function DemoLinePlot({ token, dataToPlot }) {
+function LinePlot({ token, dataToPlot }) {
   const data = {
     labels: dataToPlot.dates,//['2021-10-03', '2021-12-10', '2022-01-08'],
     datasets: [
@@ -10,7 +10,8 @@ function DemoLinePlot({ token, dataToPlot }) {
         label: dataToPlot.label, //'Stride Length',
         data: dataToPlot.values,//[112.4, 108.5, 109.7],
         fill: false,
-        borderColor: 'rgba(75,192,192,1)',
+        borderColor: 'rgba(204,0,0,1)',
+        backgroundColor: 'rgba(204, 0, 0, 0.5)'
       },
     ],
   };
@@ -47,4 +48,4 @@ function DemoLinePlot({ token, dataToPlot }) {
   )
 };
 
-export default DemoLinePlot;
+export default LinePlot;

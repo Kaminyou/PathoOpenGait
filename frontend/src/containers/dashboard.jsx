@@ -4,6 +4,12 @@ import UnauthorizedPage from "../components/unauthorizedPage";
 import ColumnGroupingTable from "../components/ColumnGroupingTable";
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
+import LinePlot from "../components/linePlot"
+
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 function DashBoardPage({ token }) {
 
@@ -18,6 +24,45 @@ function DashBoardPage({ token }) {
   const [description, setDescription] = useState('');
 
   const [results, setResults] = useState([]);
+
+  const [dataToPlot, setDataToPlot] = useState(null);
+  const [selectedOption, setSelectedOption] = useState('stride length');
+
+  const mapSelectedOption = {
+    'stride length': 'stride length (cm)',
+    'stride width': 'stride width (cm)',
+    'stride time': 'stride time (s)',
+    'velocity': 'velocity (m/s)',
+    'cadence': 'cadence (1/min)',
+    'turn time': 'turn time (s)',
+  }
+
+  const loadData = () => {
+    let extractedDate = results.map(item => item['date']);
+    let extractedValues = results.map(item => item[selectedOption]);
+    let data = {
+      'label': mapSelectedOption[selectedOption],
+      'dates': extractedDate.reverse(),
+      'values': extractedValues.reverse(),
+    }
+    setDataToPlot(data)
+  }
+  useEffect(() => {
+    loadData();
+  }, [results, selectedOption]);
+
+  const handleOptionChange = (event) => {
+    let newSelection = event.target.value
+    setSelectedOption(newSelection);
+    // let extractedDate = gaitData.map(item => item['date']);
+    // let extractedValues = gaitData.map(item => item[newSelection]);
+    // let data = {
+    //   'label': newSelection,
+    //   'dates': extractedDate,
+    //   'values': extractedValues
+    // }
+    // setDataToPlot(data)
+  };
 
   const fetchDefault = async () => {
     try {
@@ -64,7 +109,7 @@ function DashBoardPage({ token }) {
         <b>Request information</b>
       </TableCell>
       <TableCell align="left" colSpan={6}>
-        <b>Results</b>
+        <b>Gait parameters</b>
       </TableCell>
     </TableRow>
   )
@@ -126,7 +171,6 @@ function DashBoardPage({ token }) {
     },
   ];
 
-
   if (!token) {
     // Render unauthorized page or redirect to unauthorized route
     return (
@@ -167,7 +211,30 @@ function DashBoardPage({ token }) {
         <div className="col-md-9">
           <div className="row">
             <div className="col-md-12">
-              <h3>Clinical Data</h3>
+              <div className="select-wrapper">
+              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel id="demo-simple-select-standard-label">Gait parameters</InputLabel>
+                <Select
+                  labelId="demo-simple-select-standard-label"
+                  id="demo-simple-select-standard"
+                  value={selectedOption}
+                  onChange={handleOptionChange}
+                  label="Gait-parameter"
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value={'stride length'}>Stride Length</MenuItem>
+                  <MenuItem value={'stride width'}>Stride Width</MenuItem>
+                  <MenuItem value={'stride time'}>Stride Time</MenuItem>
+                  <MenuItem value={'velocity'}>Velocity</MenuItem>
+                  <MenuItem value={'cadence'}>Cadence</MenuItem>
+                  <MenuItem value={'turn time'}>Turn time</MenuItem>
+                </Select>
+              </FormControl>
+                
+              </div>
+              {dataToPlot === null ? <></> : <LinePlot dataToPlot={dataToPlot}/>}
               <ColumnGroupingTable columns={dashboard_columns} data={results} TopHeader={TopHeader} token={token}/>
             </div>
             

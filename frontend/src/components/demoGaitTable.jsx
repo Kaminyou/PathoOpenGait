@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import UploadButton from "../components/uploadButton"
 import { Checkbox, FormGroup, FormControlLabel } from '@mui/material';
 
-import DemoLinePlot from "../components/demoLinePlot"
+import LinePlot from "./linePlot"
 
 function DemoGaitTable({ token, gaitUnit, gaitData, patientInfo }) {
   const [dataToPlot, setDataToPlot] = useState(null);
@@ -62,7 +62,7 @@ function DemoGaitTable({ token, gaitUnit, gaitData, patientInfo }) {
           <option value="velocity">Velocity</option>
         </select>
       </div>
-      {dataToPlot === null ? <></> : <DemoLinePlot dataToPlot={dataToPlot}/>}
+      {dataToPlot === null ? <></> : <LinePlot dataToPlot={dataToPlot}/>}
       
       
       <h4>Records</h4>
