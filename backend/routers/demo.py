@@ -65,7 +65,7 @@ def demo_gait_unit() -> dict:
             'stride_length': 'Stride length (cm)',
             'stride_width': 'Stride width (cm)',
             'stride_time': 'Stride time (s)',
-            'velocity': 'Velocity (m)',
+            'velocity': 'Velocity (m/s)',
             'cadence': 'Cadence (1/s)',
             'turn_time': 'Turn time (s)',
         },

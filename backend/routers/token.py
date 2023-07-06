@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from http import HTTPStatus
 
-from flask import Blueprint, jsonify, request
+from flask import current_app, Blueprint, jsonify, request
 from flask_jwt_extended import (create_access_token, get_jwt, get_jwt_identity,
                                 jwt_required, unset_jwt_cookies)
 
@@ -40,7 +40,7 @@ def login():
         return response, HTTPStatus.OK
 
     except Exception as e:
-        token_api.logger.info(f'{account} trigger exception {e}')
+        current_app.logger.info(f'{account} trigger exception {e}')
         return (
             {'msg': 'Wrong account or password'},
             HTTPStatus.UNAUTHORIZED,
@@ -77,5 +77,5 @@ def validate_token():
         return {'msg': 'Success'}, HTTPStatus.OK
 
     except Exception as e:
-        token_api.logger.info(f'{account} trigger exception {e}')
+        current_app.logger.info(f'{account} trigger exception {e}')
         return {'msg': 'Invalid'}, HTTPStatus.FORBIDDEN

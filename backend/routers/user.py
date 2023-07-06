@@ -1,10 +1,10 @@
 import os
 from http import HTTPStatus
 
-from flask import Blueprint, request, jsonify
+from flask import current_app, Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
-from models import UserModel, RequestModel, ProfileModel
+from models import UserModel, RequestModel, ProfileModel, ResultModel
 from schemas.request import RequestSchema
 from schemas.profile import ProfileSchema
 from inference.tasks import inference_gait_task
@@ -34,7 +34,7 @@ def get_user_category() -> dict:
             HTTPStatus.OK,
         )
     except Exception as e:
-        user_api.logger.info(f'trigger exception {e}')
+        current_app.logger.info(f'trigger exception {e}')
         return (
             {'category': 'guest'},
             HTTPStatus.OK,
@@ -88,7 +88,7 @@ def upload_gait_csv():
         )
 
     except Exception as e:
-        user_api.logger.info(f'{account} trigger exception {e}')
+        current_app.logger.info(f'{account} trigger exception {e}')
         return (
             {'msg': 'Error'},
             HTTPStatus.FORBIDDEN,
@@ -117,7 +117,51 @@ def request_status():
         )
 
     except Exception as e:
-        user_api.logger.info(f'{account} trigger exception {e}')
+        current_app.logger.info(f'{account} trigger exception {e}')
+        return (
+            {'msg': 'Error'},
+            HTTPStatus.FORBIDDEN,
+        )
+
+
+@user_api.route('/request/results', methods=['GET'])
+@jwt_required()
+def request_results():
+    try:
+        account = get_jwt_identity()
+        user_instance = UserModel.find_by_account(account=account)
+
+        if user_instance is None:
+            return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
+
+        request_objects = RequestModel.find_by_account_and_sort_by_exp_date(account=account)
+        results = []
+        for request_object in request_objects:
+            sub_results = {}
+            sub_results['dateUpload'] = request_object.__dict__['dateUpload'].strftime("%Y-%m-%d")
+            sub_results['date'] = request_object.__dict__['date'].strftime("%Y-%m-%d")
+            request_uuid = request_object.__dict__['submitUUID']
+            result_objects = ResultModel.find_by_requestUUID(requestUUID=request_uuid)
+            for result_object in result_objects:
+                k = result_object.__dict__['resultKey']
+                v = result_object.__dict__['resultValue']
+                v_type = result_object.__dict__['resultType']
+                if v_type == 'float':
+                    v = round(float(v), 2)
+                sub_results[k] = v
+            results.append(sub_results)
+        
+        print(results)
+        return (
+            {
+                'msg': 'success',
+                'results': results,
+            },
+            HTTPStatus.OK,
+        )
+
+    except Exception as e:
+        current_app.logger.info(f'{account} trigger exception {e}')
         return (
             {'msg': 'Error'},
             HTTPStatus.FORBIDDEN,
