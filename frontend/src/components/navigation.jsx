@@ -88,7 +88,7 @@ function Navigation({ token }) {
                 'admin': (
                   <ul className="nav navbar-nav navbar-right">
                   <li className="nav-item">
-                    <Link to={"/demo"}>Admin</Link>
+                    <Link to={"/admin"}>Admin</Link>
                   </li>
                   <li className="nav-item">
                     <Link to={"/logout"}>Logout</Link>

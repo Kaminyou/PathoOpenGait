@@ -10,6 +10,7 @@ import LogoutPage from './containers/logout'
 import UploadPage from './containers/upload'
 import ProfilePage from './containers/profile'
 import DashBoardPage from './containers/dashboard'
+import AdminPage from './containers/admin'
 import useToken from './components/useToken'
 
 export const scroll = new SmoothScroll('a[href*="#"]', {
@@ -47,6 +48,9 @@ function App() {
           </Route>
           <Route exact path='/dashboard'>
             <DashBoardPage token={token} />
+          </Route>
+          <Route>
+            <AdminPage token={token} />
           </Route>
         </Switch>
       </div>

@@ -64,3 +64,17 @@ def parse_request_instances(request_instances):
     for request_instance in request_instances:
         results.append(parse_request_instance(request_instance))
     return results
+
+
+def parse_user_instances(user_instances):
+    response = []
+    for user_instance in user_instances:
+        response.append(parse_user_instance(user_instance))
+    return response
+
+
+def parse_user_instance(user_instance):
+    response = {}
+    response['account'] = user_instance.__dict__['account']
+    response['category'] = user_instance.__dict__['category'].name
+    return response
