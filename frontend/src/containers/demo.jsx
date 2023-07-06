@@ -1,69 +1,69 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-import DemoSubmit from "../components/demoSubmit"
-import DemoGaitTable from "../components/demoGaitTable"
+import SimpleDashboard from '../components/simpleDashboard'
 
 function DemoPage({ token }) {
-  const [checked, setChecked] = useState(false);
-  const [gaitData, setGaitData] = useState(null);
-  const [gaitUnit, setGaitUnit] = useState(null);
-  const [patientInfo, setPatientInfo] = useState(null);
+  const [name, setName] = useState('');
+  const [gender, setGender] = useState('');
+  const [birthday, setBirthday] = useState('');
 
-  const handleChange = () => {
-    setChecked(!checked)
+  const [diagnose, setDiagnose] = useState('');
+  const [stage, setStage] = useState('');
+  const [dominantSide, setDominantSide] = useState('');
+  const [lded, setLDED] = useState('');
+  const [description, setDescription] = useState('');
+  const [results, setResults] = useState([]);
+
+  const fetchDefault = async () => {
+    try {
+      const response = await axios.get("/api/demo/profile/personal");
+      const { name, gender, birthday, diagnose, stage, dominantSide, lded, description } = response.data.profile;
+      setName(name);
+      setGender(gender);
+      setBirthday(birthday);
+      setDiagnose(diagnose);
+      setStage(stage);
+      setDominantSide(dominantSide);
+      setLDED(lded);
+      setDescription(description);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchDefault();
+  }, []);
+
+  const fetchResults = async () => {
+    await axios.get("/api/demo/request/results")
+    .then((res) => {
+      setResults(res.data.results)
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   }
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    await axios.get("/api/demo/patient/gait/data", {
-      headers: {Authorization: 'Bearer ' + 'ddd'}
-    })
-    .then((res) => {
-      setGaitData(res.data.data);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+  useEffect(() => {
+    fetchResults();
+  }, [])
 
-    await axios.get("/api/demo/patient/gait/unit", {
-      headers: {Authorization: 'Bearer ' + 'ddd'}
-    })
-    .then((res) => {
-      setGaitUnit(res.data.data);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-
-    await axios.get("/api/demo/patient/info", {
-      headers: {Authorization: 'Bearer ' + 'ddd'}
-    })
-    .then((res) => {
-      setPatientInfo(res.data.data);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-  }
 
   return (
-    <div className='padding-block'>
-      <div className="container">
-        <div className="row">
-          <div className="col-xs-12 col-md-10">
-            <div className="about-text">
-              <h2>Demo</h2>
-              {(gaitData === null || gaitUnit === null || patientInfo === null) ? <>
-                <DemoSubmit token={token} checked={checked} handleChange={handleChange} onSubmit={onSubmit}/>
-              </>:<>
-                <DemoGaitTable token={token} gaitData={gaitData} gaitUnit={gaitUnit} patientInfo={patientInfo}/>
-              </>}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <SimpleDashboard
+      name={name}
+      gender={gender}
+      birthday={birthday}
+      diagnose={diagnose}
+      stage={stage}
+      dominantSide={dominantSide}
+      lded={lded}
+      description={description}
+      results={results}
+      token={token}
+    />
   )
 }
 
