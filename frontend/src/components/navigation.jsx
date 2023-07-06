@@ -106,6 +106,12 @@ function Navigation({ token }) {
                     <Link to={"/manage"}>Manage</Link>
                   </li>
                   <li className="nav-item">
+                    <Link to={"/manageupload"}>Upload</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to={"/managedashboard"}>Dashboard</Link>
+                  </li>
+                  <li className="nav-item">
                     <Link to={"/logout"}>Logout</Link>
                   </li>
                   <li className="nav-item">

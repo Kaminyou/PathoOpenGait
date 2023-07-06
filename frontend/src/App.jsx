@@ -12,6 +12,8 @@ import ProfilePage from './containers/profile'
 import DashBoardPage from './containers/dashboard'
 import AdminPage from './containers/admin'
 import ManagePage from './containers/manage'
+import ManageDashBoardPage from './containers/manageDashboard'
+import ManageUploadPage from './containers/manageUpload'
 import useToken from './components/useToken'
 
 export const scroll = new SmoothScroll('a[href*="#"]', {
@@ -55,6 +57,12 @@ function App() {
           </Route>
           <Route exact path='/manage'>
             <ManagePage token={token} />
+          </Route>
+          <Route exact path='/managedashboard'>
+            <ManageDashBoardPage token={token} />
+          </Route>
+          <Route exact path='/manageupload'>
+            <ManageUploadPage token={token} />
           </Route>
         </Switch>
       </div>
