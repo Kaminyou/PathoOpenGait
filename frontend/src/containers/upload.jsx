@@ -72,6 +72,9 @@ function UploadPage({ token }) {
       .then(response => {
         console.log(response.data); // Handle the response from the backend
         setLoading(false); // Set loading back to false after successful upload
+        setDescription('')
+        setCSVFile(null)
+        setMP4File(null)
         swal({
           title: "Success",
           text: "Submit Success!",
