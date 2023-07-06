@@ -101,7 +101,7 @@ class BasicGaitAnalyzer:
             {
                 'key': 'cadence',
                 'value': cadence,
-                'unit': 'Hz',
+                'unit': '1/min',
                 'type': 'float',
             },
             {
