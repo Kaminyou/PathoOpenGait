@@ -9,19 +9,20 @@
 (e.g., .mp4) in a folder.
 """
 
-import detectron2
-from detectron2.utils.logger import setup_logger
-from detectron2.config import get_cfg
-from detectron2 import model_zoo
-from detectron2.engine import DefaultPredictor
-
-import subprocess as sp
-import numpy as np
-import time
 import argparse
-import sys
-import os
 import glob
+import os
+import subprocess as sp
+import sys
+import time
+
+import detectron2
+import numpy as np
+from detectron2 import model_zoo
+from detectron2.config import get_cfg
+from detectron2.engine import DefaultPredictor
+from detectron2.utils.logger import setup_logger
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='End-to-end inference')

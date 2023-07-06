@@ -5,9 +5,11 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-import torch
-import numpy as np
 import hashlib
+
+import numpy as np
+import torch
+
 
 def wrap(func, *args, unsqueeze=False):
     """

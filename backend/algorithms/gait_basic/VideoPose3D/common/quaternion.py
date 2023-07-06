@@ -7,6 +7,7 @@
 
 import torch
 
+
 def qrot(q, v):
     """
     Rotate vector(s) v about the rotation described by quaternion(s) q.

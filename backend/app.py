@@ -4,15 +4,15 @@ from datetime import datetime, timedelta, timezone
 
 from flask import Flask
 from flask_cors import CORS
-from flask_jwt_extended import (JWTManager, create_access_token, get_jwt,
-                                get_jwt_identity)
+from flask_jwt_extended import JWTManager, create_access_token, get_jwt, get_jwt_identity
 
 from db import db
 from routers.admin import admin_api
 from routers.demo import demo_api
+from routers.manager import manager_api
 from routers.token import token_api
 from routers.user import user_api
-from routers.manager import manager_api
+
 
 app = Flask(__name__)
 app.config["JWT_SECRET_KEY"] = os.getenv('JWT_SECRET_KEY',)

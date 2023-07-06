@@ -8,6 +8,7 @@
 import numpy as np
 from common.skeleton import Skeleton
 
+
 class MocapDataset:
     def __init__(self, fps, skeleton):
         self._skeleton = skeleton

@@ -1,8 +1,6 @@
 import os
 
 import torch
-from torch.utils.tensorboard import SummaryWriter
-
 from data.combined_patient_info import PATIENT_INFO
 from splits.semi_no_label import semi_train_trial_paths
 from splits.site_1_train import site_1_train_trial_paths
@@ -12,6 +10,7 @@ from src.datasets import GaitTrialInstance, SignalDataset, SignalSSLDataset
 from src.models import SignalNet
 from src.processes import evaluate, integrated_evaluation, semi_train
 from src.utils import get_cosine_schedule_with_warmup
+from torch.utils.tensorboard import SummaryWriter
 
 
 if __name__ == '__main__':

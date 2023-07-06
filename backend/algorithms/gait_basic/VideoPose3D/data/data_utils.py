@@ -7,6 +7,7 @@
 
 import numpy as np
 
+
 mpii_metadata = {
     'layout_name': 'mpii',
     'num_joints': 16,

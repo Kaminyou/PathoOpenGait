@@ -1,15 +1,17 @@
 from http import HTTPStatus
 
-from flask import current_app, Blueprint, jsonify, request
-from flask_jwt_extended import (create_access_token, get_jwt, get_jwt_identity,
-                                jwt_required, unset_jwt_cookies)
+from flask import Blueprint, current_app, jsonify, request
+from flask_jwt_extended import (
+    create_access_token, get_jwt, get_jwt_identity, jwt_required, unset_jwt_cookies,
+)
 
 from enums.user import UserCategoryEnum
-from models import UserModel, SubordinateModel
-from schemas.user import UserSchema
+from models import SubordinateModel, UserModel
+from parsers.parser import parse_subordinate_instances, parse_user_instances
 from schemas.subordinate import SubordinateSchema
+from schemas.user import UserSchema
 from security import get_sha256
-from parsers.parser import parse_user_instances, parse_subordinate_instances
+
 
 manager_api = Blueprint('manager', __name__)
 user_schema = UserSchema()

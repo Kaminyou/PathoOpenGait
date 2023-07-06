@@ -5,8 +5,9 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-import torch
 import numpy as np
+import torch
+
 
 def mpjpe(predicted, target):
     """

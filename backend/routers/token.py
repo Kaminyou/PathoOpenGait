@@ -1,12 +1,14 @@
 from datetime import datetime, timedelta, timezone
 from http import HTTPStatus
 
-from flask import current_app, Blueprint, jsonify, request
-from flask_jwt_extended import (create_access_token, get_jwt, get_jwt_identity,
-                                jwt_required, unset_jwt_cookies)
+from flask import Blueprint, current_app, jsonify, request
+from flask_jwt_extended import (
+    create_access_token, get_jwt, get_jwt_identity, jwt_required, unset_jwt_cookies,
+)
 
 from models import UserModel
 from security import get_sha256
+
 
 token_api = Blueprint('token', __name__)
 

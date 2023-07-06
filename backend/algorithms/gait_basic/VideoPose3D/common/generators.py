@@ -6,7 +6,9 @@
 #
 
 from itertools import zip_longest
+
 import numpy as np
+
 
 class ChunkedGenerator:
     """

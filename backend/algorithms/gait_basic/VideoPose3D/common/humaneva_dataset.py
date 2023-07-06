@@ -5,12 +5,14 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-import numpy as np
 import copy
-from common.skeleton import Skeleton
+
+import numpy as np
+from common.camera import image_coordinates, normalize_screen_coordinates
 from common.mocap_dataset import MocapDataset
-from common.camera import normalize_screen_coordinates, image_coordinates
-       
+from common.skeleton import Skeleton
+
+
 humaneva_skeleton = Skeleton(parents=[-1, 0, 1, 2, 3, 1, 5, 6, 0, 8, 9, 0, 11, 12, 1],
        joints_left=[2, 3, 4, 8, 9, 10],
        joints_right=[5, 6, 7, 11, 12, 13])

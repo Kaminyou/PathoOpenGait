@@ -1,8 +1,6 @@
 import os
 
 import torch
-from torch.utils.tensorboard import SummaryWriter
-
 from data.combined_patient_info import PATIENT_INFO
 from splits.site_1_train import site_1_train_trial_paths
 from splits.site_1_v2 import site_1_eval_trial_paths
@@ -10,6 +8,7 @@ from splits.site_2_v1 import site_2_eval_trial_paths
 from src.datasets import GaitTrialInstance, SignalDataset
 from src.models import SignalNet
 from src.processes import evaluate, integrated_evaluation, train
+from torch.utils.tensorboard import SummaryWriter
 
 
 if __name__ == '__main__':

@@ -7,18 +7,21 @@
 
 import argparse
 import os
-import zipfile
+import sys
 import tarfile
-import numpy as np
-import h5py
+import zipfile
 from glob import glob
 from shutil import rmtree
 
-import sys
+import h5py
+import numpy as np
+
+
 sys.path.append('../')
+from common.camera import image_coordinates, project_to_2d, world_to_camera
 from common.h36m_dataset import Human36mDataset
-from common.camera import world_to_camera, project_to_2d, image_coordinates
 from common.utils import wrap
+
 
 output_filename_pt = 'data_2d_h36m_sh_pt_mpii'
 output_filename_ft = 'data_2d_h36m_sh_ft_h36m'

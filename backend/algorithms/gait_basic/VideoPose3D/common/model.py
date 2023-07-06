@@ -7,6 +7,7 @@
 
 import torch.nn as nn
 
+
 class TemporalModelBase(nn.Module):
     """
     Do not instantiate this class.

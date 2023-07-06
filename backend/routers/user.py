@@ -1,16 +1,17 @@
 import os
 from http import HTTPStatus
 
-from flask import current_app, Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask import Blueprint, current_app, jsonify, request
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from enums.request import Status
-from models import UserModel, RequestModel, ProfileModel, ResultModel
-from schemas.request import RequestSchema
-from schemas.profile import ProfileSchema
 from inference.tasks import inference_gait_task
-from security import get_sha256
+from models import ProfileModel, RequestModel, ResultModel, UserModel
 from parsers.parser import parse_personal_profile, parse_request_instances
+from schemas.profile import ProfileSchema
+from schemas.request import RequestSchema
+from security import get_sha256
+
 
 requestSchema = RequestSchema()
 profileSchema = ProfileSchema()

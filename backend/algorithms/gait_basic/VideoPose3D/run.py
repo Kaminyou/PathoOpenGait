@@ -5,24 +5,23 @@
 # LICENSE file in the root directory of this source tree.
 #
 
+import errno
+import os
+import sys
+from time import time
+
 import numpy as np
-
-from common.arguments import parse_args
 import torch
-
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-import os
-import sys
-import errno
-
+from common.arguments import parse_args
 from common.camera import *
-from common.model import *
-from common.loss import *
 from common.generators import ChunkedGenerator, UnchunkedGenerator
-from time import time
+from common.loss import *
+from common.model import *
 from common.utils import deterministic_random
+
 
 args = parse_args()
 print(args)

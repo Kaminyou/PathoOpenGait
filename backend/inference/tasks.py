@@ -5,10 +5,11 @@ from celery.exceptions import MaxRetriesExceededError
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from models import RequestModel
 from enums.request import Status
+from models import RequestModel
 
 from .gait import inference_gait
+
 
 celery = Celery(__name__)
 celery.conf.broker_url = os.environ.get("CELERY_BROKER_URL", "redis://redis:6379")

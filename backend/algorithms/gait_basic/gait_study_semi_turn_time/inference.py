@@ -5,9 +5,8 @@ import torch
 import torch.nn as nn
 from scipy import ndimage
 
-from .src.models import SignalNet
 from .src.datasets import GaitTrialInstanceSimple
-
+from .src.models import SignalNet
 from .src.utils import group_continuous_ones
 
 

@@ -7,18 +7,22 @@
 
 import argparse
 import os
-import zipfile
-import numpy as np
-import h5py
 import re
+import sys
+import zipfile
 from glob import glob
 from shutil import rmtree
+
+import h5py
+import numpy as np
 from data_utils import suggest_metadata, suggest_pose_importer
 
-import sys
+
 sys.path.append('../')
-from common.utils import wrap
 from itertools import groupby
+
+from common.utils import wrap
+
 
 output_prefix_2d = 'data_2d_h36m_'
 cam_map = {

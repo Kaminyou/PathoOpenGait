@@ -6,13 +6,17 @@
 #
 
 import matplotlib
+
+
 matplotlib.use('Agg')
 
+import subprocess as sp
+
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.animation import FuncAnimation, writers
 from mpl_toolkits.mplot3d import Axes3D
-import numpy as np
-import subprocess as sp
+
 
 def get_resolution(filename):
     command = ['ffprobe', '-v', 'error', '-select_streams', 'v:0',

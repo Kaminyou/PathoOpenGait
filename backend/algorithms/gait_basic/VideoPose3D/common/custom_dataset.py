@@ -5,13 +5,14 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-import numpy as np
 import copy
-from common.skeleton import Skeleton
-from common.mocap_dataset import MocapDataset
-from common.camera import normalize_screen_coordinates, image_coordinates
+
+import numpy as np
+from common.camera import image_coordinates, normalize_screen_coordinates
 from common.h36m_dataset import h36m_skeleton
-       
+from common.mocap_dataset import MocapDataset
+from common.skeleton import Skeleton
+
 
 custom_camera_params = {
     'id': None,

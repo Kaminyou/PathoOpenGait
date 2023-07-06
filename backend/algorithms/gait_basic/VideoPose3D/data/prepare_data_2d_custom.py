@@ -5,13 +5,14 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-import numpy as np
-from glob import glob
+import argparse
 import os
 import sys
+from glob import glob
 
-import argparse
+import numpy as np
 from data_utils import suggest_metadata
+
 
 output_prefix_2d = 'data_2d_custom_'
 

@@ -4,8 +4,8 @@ import typing as t
 
 import pandas as pd
 
-from .gait_study_semi_turn_time.inference import simple_inference
 from .._analyzer import Analyzer
+from .gait_study_semi_turn_time.inference import simple_inference
 
 
 def avg(l, r, nl, nr):

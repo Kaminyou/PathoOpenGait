@@ -7,18 +7,22 @@
 
 import argparse
 import os
-import zipfile
-import numpy as np
-import h5py
 import re
+import sys
+import zipfile
 from glob import glob
 from shutil import rmtree
+
+import h5py
+import numpy as np
 from data_utils import suggest_metadata, suggest_pose_importer
 
-import sys
+
 sys.path.append('../')
-from common.utils import wrap
 from itertools import groupby
+
+from common.utils import wrap
+
 
 subjects = ['Train/S1', 'Train/S2', 'Train/S3', 'Validate/S1', 'Validate/S2', 'Validate/S3']
 

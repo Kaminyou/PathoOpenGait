@@ -9,9 +9,11 @@
 (e.g., .mp4) in a folder.
 """
 
-from infer_simple import *
 import subprocess as sp
+
 import numpy as np
+from infer_simple import *
+
 
 def get_resolution(filename):
     command = ['ffprobe', '-v', 'error', '-select_streams', 'v:0',

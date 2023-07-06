@@ -1,8 +1,9 @@
 import os
 
 from algorithms.gait_basic.main import BasicGaitAnalyzer
-from schemas.result import ResultSchema
 from models import ResultModel
+from schemas.result import ResultSchema
+
 
 result_schema = ResultSchema()
 
