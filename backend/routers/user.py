@@ -81,12 +81,6 @@ def upload_gait_csv():
             request_obj.delete_from_db()  # Rollback
             return {'msg': 'Internal Server Error!'}, HTTPStatus.INTERNAL_SERVER_ERROR
 
-
-        return (
-            {'msg': 'File uploaded successfully'},
-            HTTPStatus.OK,
-        )
-
     except Exception as e:
         current_app.logger.info(f'{account} trigger exception {e}')
         return (
