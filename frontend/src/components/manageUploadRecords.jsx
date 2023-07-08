@@ -4,12 +4,12 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import ColumnGroupingTable from '../components/ColumnGroupingTable'
 
-function UploadRecords({ token }) {
+function ManageUploadRecords({ token }) {
   const [records, setRecords] = useState([]);
   const MINUTE_MS = 2000; // 2 sec
 
   const fetchRecords = async () => {
-    await axios.get("/api/user/request/status", {
+    await axios.get("/api/manage/request/status", {
       headers: {Authorization: 'Bearer ' + token}
     })
     .then((res) => {
@@ -77,4 +77,4 @@ function UploadRecords({ token }) {
   );
 }
 
-export default UploadRecords;
+export default ManageUploadRecords;

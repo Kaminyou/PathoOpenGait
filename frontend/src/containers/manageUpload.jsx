@@ -9,6 +9,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import DataModelChoice from "../components/dataModelChoice"
+import ManageUploadRecords from '../components/manageUploadRecords'
 
 function ManageUploadPage({ token }) {
   const [expanded, setExpanded] = useState(false);
@@ -293,6 +294,8 @@ function ManageUploadPage({ token }) {
             </div>
           </div>
           <div className="col-xs-12 col-md-12">
+          <h4>Upload records</h4>
+            <ManageUploadRecords token={token}/>
           </div>
         </div>
       </div>

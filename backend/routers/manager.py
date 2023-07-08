@@ -10,7 +10,7 @@ from enums.request import Status
 from enums.user import UserCategoryEnum
 from inference.tasks import inference_gait_task
 from models import SubordinateModel, UserModel, RequestModel, ResultModel, ProfileModel
-from parsers.parser import parse_subordinate_instances, parse_personal_profile
+from parsers.parser import parse_subordinate_instances, parse_personal_profile, parse_request_instances
 from schemas.subordinate import SubordinateSchema
 from schemas.user import UserSchema
 from schemas.request import RequestSchema
@@ -234,6 +234,43 @@ def manager_request_results():
             {
                 'msg': 'success',
                 'results': results,
+            },
+            HTTPStatus.OK,
+        )
+
+    except Exception as e:
+        current_app.logger.info(f'{account} trigger exception {e}')
+        return (
+            {'msg': 'Error'},
+            HTTPStatus.FORBIDDEN,
+        )
+
+
+@manager_api.route('/request/status', methods=['GET'])
+@jwt_required()
+def manager_request_status():
+    try:
+        account = get_jwt_identity()
+        user_instance = UserModel.find_by_account(account=account)
+
+        if user_instance is None:
+            return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
+
+        if user_instance.__dict__['category'] != UserCategoryEnum.manager:
+            return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
+        
+        request_objects = []
+        subordinate_instances = SubordinateModel.find_by_account(account=account)
+        for subordinate_instance in subordinate_instances:
+            if subordinate_instance.__dict__['exist']:
+                target_account = subordinate_instance.__dict__['subordinate']
+                request_objects += RequestModel.find_by_account(account=target_account)
+        request_status_data = parse_request_instances(request_objects)
+        
+        return (
+            {
+                'msg': 'success',
+                'records': request_status_data,
             },
             HTTPStatus.OK,
         )
