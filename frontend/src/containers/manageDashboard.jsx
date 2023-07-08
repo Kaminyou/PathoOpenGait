@@ -6,6 +6,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import ProfilePanel from '../components/profilePanel'
 
 
 function ManageDashBoardPage({ token }) {
@@ -164,43 +165,23 @@ function ManageDashBoardPage({ token }) {
               ))}
             </Select>
           </FormControl>
-          <h3>Patient Profile</h3>
-          <div className="panel panel-default">
-            <div className="panel-body">
-              <h4>Basic information</h4>
-              <p><strong>Name:</strong> {name}</p>
-              <p><strong>Gender:</strong> {gender}</p>
-              <p><strong>Birthday:</strong> {birthday}</p>
-            </div>
-          </div>
-          <div className="panel panel-default">
-            <div className="panel-body">
-              <h4>Diagnosis</h4>
-              <p><strong>Diagnose:</strong> {diagnose}</p>
-              <p><strong>Stage:</strong> {stage}</p>
-            </div>
-          </div>
-          <div className="panel panel-default">
-            <div className="panel-body">
-              <h4>Additional Information</h4>
-              <p><strong>Dominant Side:</strong> {dominantSide}</p>
-              <p><strong>LDED:</strong> {lded}</p>
-              <p><strong>Description:</strong> {description}</p>
-            </div>
-          </div>
+          <ProfilePanel
+            name={name}
+            gender={gender}
+            birthday={birthday}
+            diagnose={diagnose}
+            stage={stage}
+            dominantSide={dominantSide}
+            lded={lded}
+            description={description}
+          />
         </div>
-        <SimpleDashboard
-          name={name}
-          gender={gender}
-          birthday={birthday}
-          diagnose={diagnose}
-          stage={stage}
-          dominantSide={dominantSide}
-          lded={lded}
-          description={description}
-          results={results}
-          token={token}
-        />
+        <div className="col-md-9">
+          <SimpleDashboard
+            results={results}
+            token={token}
+          />
+        </div>
       </div>
     </div>
   </div>

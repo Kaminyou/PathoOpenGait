@@ -274,6 +274,31 @@ def get_user_profile():
     
     except Exception:
         return {"msg": "Internal Server Error!"}, HTTPStatus.INTERNAL_SERVER_ERROR
+    
+
+@user_api.route('/profile/personal/uuid', methods=['GET'])
+@jwt_required()
+def get_user_profile_with_uuid():
+    try:
+        account = get_jwt_identity()
+        if not UserModel.find_by_account(account=account):
+            return {"msg": "Wrong account or password"}, 401
+
+        submit_uuid = request.args.get('id')
+        request_object = RequestModel.find_by_submitID(submitUUID=submit_uuid)
+        target_account = request_object.__dict__['account']
+        
+        profile_object = ProfileModel.find_latest_by_account(account=target_account)
+        profile = parse_personal_profile(profile_object)
+        try:
+            return jsonify({"msg": "Submit successfully!", "profile": profile}), HTTPStatus.OK
+
+        except Exception as e:
+            current_app.logger.info(f'{account} trigger exception {e}')
+            return {"message": "Internal Server Error!"}, HTTPStatus.INTERNAL_SERVER_ERROR
+    
+    except Exception:
+        return {"msg": "Internal Server Error!"}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 @user_api.route('/video', methods=['GET'])

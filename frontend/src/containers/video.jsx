@@ -42,8 +42,8 @@ function VideoPage({ token }) {
 
   const fetchDefault = async () => {
     try {
-      const response = await axios.get("/api/user/profile/personal", {
-        headers: { Authorization: 'Bearer ' + token }
+      const response = await axios.get("/api/user/profile/personal/uuid", {
+        params: { id: id }, headers: { Authorization: 'Bearer ' + token }
       });
       const { name, gender, birthday, diagnose, stage, dominantSide, lded, description } = response.data.profile;
       setName(name);

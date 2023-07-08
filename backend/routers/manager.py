@@ -219,6 +219,7 @@ def manager_request_results():
             sub_results['dateUpload'] = request_object.__dict__['dateUpload'].strftime("%Y-%m-%d")
             sub_results['date'] = request_object.__dict__['date'].strftime("%Y-%m-%d")
             request_uuid = request_object.__dict__['submitUUID']
+            sub_results['detail'] = request_uuid
             result_objects = ResultModel.find_by_requestUUID(requestUUID=request_uuid)
             for result_object in result_objects:
                 k = result_object.__dict__['resultKey']
