@@ -54,7 +54,7 @@ export default function ColumnGroupingTable({ columns, data, token, TopHeader })
                       if (column.id === "detail") {
                         return (
                             <TableCell key={column.id} align={column.align}>
-                              <Link to={"/detail/"+value}>Report</Link>
+                              <Link to={"/video/"+value}>Video</Link>
                             </TableCell>
                         );
                       }

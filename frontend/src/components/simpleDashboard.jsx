@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import UnauthorizedPage from "../components/unauthorizedPage";
 import ColumnGroupingTable from "../components/ColumnGroupingTable";
@@ -11,7 +11,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-function SimpleDashboard({ name, gender, birthday, diagnose, stage, dominantSide, lded, description, results, token }) {
+function SimpleDashboard({ results, token }) {
 
   const [dataToPlot, setDataToPlot] = useState(null);
   const [selectedOption, setSelectedOption] = useState('stride length');
@@ -46,7 +46,7 @@ function SimpleDashboard({ name, gender, birthday, diagnose, stage, dominantSide
 
   const TopHeader = (
     <TableRow>
-      <TableCell align="left" colSpan={1}>
+      <TableCell align="left" colSpan={2}>
         <b>Request information</b>
       </TableCell>
       <TableCell align="left" colSpan={6}>
@@ -65,6 +65,12 @@ function SimpleDashboard({ name, gender, birthday, diagnose, stage, dominantSide
     { 
       id: 'date',
       label: 'Experiment Date',
+      minWidth: 100, 
+      color: '#131313',
+    },
+    {
+      id: 'detail',
+      label: 'Detail',
       minWidth: 100, 
       color: '#131313',
     },
@@ -113,39 +119,35 @@ function SimpleDashboard({ name, gender, birthday, diagnose, stage, dominantSide
   ];
 
   return (
-    
-        <div className="col-md-9">
-          <div className="row">
-            <div className="col-md-12">
-              <div className="select-wrapper">
-              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel id="demo-simple-select-standard-label">Gait parameters</InputLabel>
-                <Select
-                  labelId="demo-simple-select-standard-label"
-                  id="demo-simple-select-standard"
-                  value={selectedOption}
-                  onChange={handleOptionChange}
-                  label="Gait-parameter"
-                >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  <MenuItem value={'stride length'}>Stride Length</MenuItem>
-                  <MenuItem value={'stride width'}>Stride Width</MenuItem>
-                  <MenuItem value={'stride time'}>Stride Time</MenuItem>
-                  <MenuItem value={'velocity'}>Velocity</MenuItem>
-                  <MenuItem value={'cadence'}>Cadence</MenuItem>
-                  <MenuItem value={'turn time'}>Turn time</MenuItem>
-                </Select>
-              </FormControl>
-                
-              </div>
-              {dataToPlot === null ? <></> : <LinePlot dataToPlot={dataToPlot}/>}
-              <ColumnGroupingTable columns={dashboard_columns} data={results} TopHeader={TopHeader} token={token}/>
-            </div>
-          </div>
+    <div className="row">
+      <div className="col-md-12">
+        <div className="select-wrapper">
+        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel id="demo-simple-select-standard-label">Gait parameters</InputLabel>
+          <Select
+            labelId="demo-simple-select-standard-label"
+            id="demo-simple-select-standard"
+            value={selectedOption}
+            onChange={handleOptionChange}
+            label="Gait-parameter"
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            <MenuItem value={'stride length'}>Stride Length</MenuItem>
+            <MenuItem value={'stride width'}>Stride Width</MenuItem>
+            <MenuItem value={'stride time'}>Stride Time</MenuItem>
+            <MenuItem value={'velocity'}>Velocity</MenuItem>
+            <MenuItem value={'cadence'}>Cadence</MenuItem>
+            <MenuItem value={'turn time'}>Turn time</MenuItem>
+          </Select>
+        </FormControl>
+          
         </div>
-
+        {dataToPlot === null ? <></> : <LinePlot dataToPlot={dataToPlot}/>}
+        <ColumnGroupingTable columns={dashboard_columns} data={results} TopHeader={TopHeader} token={token}/>
+      </div>
+    </div>
   )
 }
 
