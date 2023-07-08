@@ -1,8 +1,8 @@
 import os
 
-from algorithms.gait_basic.main import BasicGaitAnalyzer
 from models import ResultModel
 from schemas.result import ResultSchema
+from .config import data_and_model_map_to_class
 
 
 result_schema = ResultSchema()
@@ -14,12 +14,16 @@ def inference_gait(
     submitUUID,
     session,
 ):
-    analyzer = BasicGaitAnalyzer()
+    try:
+        analyzer = data_and_model_map_to_class(data_type=dataType, model_name=modelName)()
+    except Exception:
+        raise ValueError(f'dataType={dataType} and modelName={modelName} not exist')
+    # analyzer = BasicGaitAnalyzer()
     results = analyzer.run(
         data_root_dir=os.path.join('/root/backend/data/', submitUUID),
         file_id='uploaded'
     )
-    print(results)
+    # print(results)
 
     for result in results:
         form_date = result_schema.load({

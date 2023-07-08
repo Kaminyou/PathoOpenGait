@@ -11,8 +11,8 @@ function UploadPage({ token }) {
   const [csvFile, setCSVFile] = useState(null);
   const [mp4File, setMP4File] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [dataType, setDataType] = useState('gait');
-  const [modelName, setModelName] = useState('gait_basic');
+  const [dataType, setDataType] = useState('gait_precomputed_csv_and_mp4');
+  const [modelName, setModelName] = useState('gait_basic::v1');
 
   const [date, setDate] = useState('');
   const [description, setDescription] = useState('');

@@ -22,7 +22,6 @@ def inference_gait_task(self, submitUUID: str):
     """
     The gait inference process
     """
-    # STEP 1: Change status to COMPUTING
     engine = create_engine(
         os.getenv(
             'SQLALCHEMY_DATABASE_URI',
@@ -35,7 +34,6 @@ def inference_gait_task(self, submitUUID: str):
     request_instance.status = Status.COMPUTING
     session.commit()
 
-    # STEP 2: CROPPING
     dataType = request_instance.dataType
     modelName = request_instance.modelName
 
