@@ -181,8 +181,8 @@ def request_result():
         request_object = RequestModel.find_by_submitID(submitUUID=submit_uuid)
 
         sub_results = {}
-        sub_results['dateUpload'] = request_object.__dict__['dateUpload'].strftime("%Y-%m-%d")
-        sub_results['date'] = request_object.__dict__['date'].strftime("%Y-%m-%d")
+        sub_results['upload date'] = request_object.__dict__['dateUpload'].strftime("%Y-%m-%d")
+        sub_results['experiment date'] = request_object.__dict__['date'].strftime("%Y-%m-%d")
         result_objects = ResultModel.find_by_requestUUID(requestUUID=submit_uuid)
         for result_object in result_objects:
             k = result_object.__dict__['resultKey']

@@ -25,6 +25,9 @@ function VideoPage({ token }) {
 
   const [result, setResult] = useState({});
 
+  const infoKeyOrder = ['experiment date', 'upload date'];
+  const keyOrder = ['stride length', 'stride width', 'stride time', 'velocity', 'cadence', 'turn time'];
+
   const fetchResult = async () => {
     await axios.get("/api/user/request/result", { params: { id: id }, headers: {Authorization: 'Bearer ' + token}})
     .then((res) => {
@@ -125,12 +128,22 @@ function VideoPage({ token }) {
       <div className="col-xs-5 col-md-5">
       <div className="panel panel-default">
         <div className="panel-heading">
+          <h4>Date information</h4>
+          </div>
+          <div className="panel-body">
+            {infoKeyOrder.map((key) => (
+              <p key={key}>
+                <strong>{key}:</strong> {result[key]}
+              </p>
+            ))}
+          </div>
+        <div className="panel-heading">
           <h4>Result</h4>
           </div>
           <div className="panel-body">
-            {Object.entries(result).map(([key, value]) => (
+            {keyOrder.map((key) => (
               <p key={key}>
-                <strong>{key}:</strong> {value}
+                <strong>{key}:</strong> {result[key]}
               </p>
             ))}
           </div>
