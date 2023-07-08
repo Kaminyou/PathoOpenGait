@@ -1,7 +1,7 @@
 import os
 from http import HTTPStatus
 
-from flask import Blueprint, current_app, jsonify, request
+from flask import Blueprint, current_app, jsonify, request, Response, send_file
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from enums.request import Status
@@ -11,6 +11,7 @@ from parsers.parser import parse_personal_profile, parse_request_instances
 from schemas.profile import ProfileSchema
 from schemas.request import RequestSchema
 from security import get_sha256
+from utils.video import get_frames
 
 
 requestSchema = RequestSchema()
@@ -139,6 +140,7 @@ def request_results():
             sub_results['dateUpload'] = request_object.__dict__['dateUpload'].strftime("%Y-%m-%d")
             sub_results['date'] = request_object.__dict__['date'].strftime("%Y-%m-%d")
             request_uuid = request_object.__dict__['submitUUID']
+            sub_results['detail'] = request_uuid
             result_objects = ResultModel.find_by_requestUUID(requestUUID=request_uuid)
             for result_object in result_objects:
                 k = result_object.__dict__['resultKey']
@@ -153,6 +155,48 @@ def request_results():
             {
                 'msg': 'success',
                 'results': results,
+            },
+            HTTPStatus.OK,
+        )
+
+    except Exception as e:
+        current_app.logger.info(f'{account} trigger exception {e}')
+        return (
+            {'msg': 'Error'},
+            HTTPStatus.FORBIDDEN,
+        )
+
+
+@user_api.route('/request/result', methods=['GET'])
+@jwt_required()
+def request_result():
+    try:
+        account = get_jwt_identity()
+        user_instance = UserModel.find_by_account(account=account)
+
+        if user_instance is None:
+            return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
+
+        submit_uuid = request.args.get('id')
+
+        request_object = RequestModel.find_by_submitID(submitUUID=submit_uuid)
+
+        sub_results = {}
+        sub_results['dateUpload'] = request_object.__dict__['dateUpload'].strftime("%Y-%m-%d")
+        sub_results['date'] = request_object.__dict__['date'].strftime("%Y-%m-%d")
+        result_objects = ResultModel.find_by_requestUUID(requestUUID=submit_uuid)
+        for result_object in result_objects:
+            k = result_object.__dict__['resultKey']
+            v = result_object.__dict__['resultValue']
+            v_type = result_object.__dict__['resultType']
+            if v_type == 'float':
+                v = round(float(v), 2)
+            sub_results[k] = v
+        
+        return (
+            {
+                'msg': 'success',
+                'result': sub_results,
             },
             HTTPStatus.OK,
         )
@@ -208,7 +252,7 @@ def update_user_profile():
         return {"msg": "Success"}, HTTPStatus.OK
     
     except Exception as e:
-        print(e)
+        current_app.logger.info(f'{account} trigger exception {e}')
         return {"msg": "Internal Server Error!"}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
@@ -226,8 +270,25 @@ def get_user_profile():
             return jsonify({"msg": "Submit successfully!", "profile": profile}), HTTPStatus.OK
 
         except Exception as e:
-            print(e)
+            current_app.logger.info(f'{account} trigger exception {e}')
             return {"message": "Internal Server Error!"}, HTTPStatus.INTERNAL_SERVER_ERROR
     
     except Exception:
         return {"msg": "Internal Server Error!"}, HTTPStatus.INTERNAL_SERVER_ERROR
+
+
+@user_api.route('/video', methods=['GET'])
+@jwt_required()
+def get_video():
+    account = get_jwt_identity()
+    if not UserModel.find_by_account(account=account):
+        return {"msg": "Wrong account or password"}, HTTPStatus.FORBIDDEN
+    
+    video_uuid = request.args.get('id')
+    video_path = f'data/{video_uuid}/output/render.mp4'
+
+    if os.path.exists(video_path):
+        return send_file(video_path), HTTPStatus.OK
+
+    else:
+        return {"msg": "Internal Server Error!"}, HTTPStatus.FORBIDDEN
