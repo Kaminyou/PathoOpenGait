@@ -1,7 +1,7 @@
 import os
 from http import HTTPStatus
 
-from flask import Blueprint, current_app, jsonify, request, Response, send_file
+from flask import Blueprint, current_app, jsonify, request, send_file
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from enums.request import Status
@@ -11,7 +11,6 @@ from parsers.parser import parse_personal_profile, parse_request_instances
 from schemas.profile import ProfileSchema
 from schemas.request import RequestSchema
 from security import get_sha256
-from utils.video import get_frames
 
 
 requestSchema = RequestSchema()
