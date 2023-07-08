@@ -8,6 +8,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import DataModelChoice from "../components/dataModelChoice"
 
 function ManageUploadPage({ token }) {
   const [expanded, setExpanded] = useState(false);
@@ -15,8 +16,10 @@ function ManageUploadPage({ token }) {
   const [csvFile, setCSVFile] = useState(null);
   const [mp4File, setMP4File] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [dataType, setDataType] = useState('gait_precomputed_csv_and_mp4');
-  const [modelName, setModelName] = useState('gait_basic::v1');
+  const [availableDataTypes, setAvailableDataTypes] = useState([]);
+  const [availableModelName, setAvailableModelName] = useState([]);
+  const [dataType, setDataType] = useState(null);
+  const [modelName, setModelName] = useState(null);
 
   const [date, setDate] = useState('');
   const [description, setDescription] = useState('');
@@ -30,6 +33,60 @@ function ManageUploadPage({ token }) {
     const newSelectedUser = event.target.value;
     setSelectedUser(newSelectedUser);
   };
+
+  const fetchModelAndData = async () => {
+    try {
+      const response = await axios.get("/api/info/list/datatypes", {
+        headers: { Authorization: 'Bearer ' + token }
+      });
+      setAvailableDataTypes(response.data.datatypes);
+      setDataType(response.data.datatypes[0])
+      let dataTypeTemp = response.data.datatypes[0]
+      try {
+        const response = await axios.get("/api/info/list/modelnames", {
+          params: { datatype: dataTypeTemp }, headers: { Authorization: 'Bearer ' + token }
+        });
+        setAvailableModelName(response.data.modelnames)
+        setModelName(response.data.modelnames[0])
+      } catch (error) {
+        console.error(error);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const fetchDataTypes = async () => {
+    try {
+      const response = await axios.get("/api/info/list/datatypes", {
+        headers: { Authorization: 'Bearer ' + token }
+      });
+      setAvailableDataTypes(response.data.datatypes);
+      setDataType(response.data.datatypes[0])
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchModelNames = async () => {
+    try {
+      const response = await axios.get("/api/info/list/modelnames", {
+        params: { datatype: dataType }, headers: { Authorization: 'Bearer ' + token }
+      });
+      setAvailableModelName(response.data.modelnames)
+      setModelName(response.data.modelnames[0])
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchModelAndData()
+  }, []);
+
+  useEffect(() => {
+    fetchModelNames();
+  }, [dataType]);
 
   const getUserList = async () => {
 
@@ -206,20 +263,14 @@ function ManageUploadPage({ token }) {
                   </div>
                 </div>
                 {expanded && (
-                  <>
-                    <div className="form-group">
-                      <label className="col-sm-1 control-label">Data Type</label>
-                      <div className="col-sm-10">
-                        <input disabled={true} type="text" className="form-control" placeholder="Datatype" value={dataType} onChange={handleDataTypeChange} />
-                      </div>
-                    </div>
-                    <div className="form-group">
-                      <label className="col-sm-1 control-label">Model Name</label>
-                      <div className="col-sm-10">
-                        <input disabled={true} type="text" className="form-control" placeholder="Model Name" value={modelName} onChange={handleModelNameChange} />
-                      </div>
-                    </div>
-                  </>
+                  <DataModelChoice
+                    dataType={dataType}
+                    handleDataTypeChange={handleDataTypeChange}
+                    availableDataTypes={availableDataTypes}
+                    modelName={modelName}
+                    handleModelNameChange={handleModelNameChange}
+                    availableModelName={availableModelName}
+                  />
                 )}
                 <div className="form-group">
                   <label className="col-sm-1 control-label">CSV File</label>

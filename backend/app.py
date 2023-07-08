@@ -12,6 +12,7 @@ from routers.demo import demo_api
 from routers.manager import manager_api
 from routers.token import token_api
 from routers.user import user_api
+from routers.info import info_api
 
 
 app = Flask(__name__)
@@ -59,6 +60,7 @@ app.register_blueprint(demo_api, url_prefix='/api/demo')
 app.register_blueprint(token_api, url_prefix='/api/token')
 app.register_blueprint(user_api, url_prefix='/api/user')
 app.register_blueprint(manager_api, url_prefix='/api/manage')
+app.register_blueprint(info_api, url_prefix='/api/info')
 
 
 if __name__ == '__main__':
