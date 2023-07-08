@@ -1,4 +1,5 @@
 import argparse
+import typing as t
 
 import numpy as np
 import torch
@@ -10,7 +11,11 @@ from .src.models import SignalNet
 from .src.utils import group_continuous_ones
 
 
-def simple_inference(pretrained_path: str, path_to_npz: str) -> float:
+def simple_inference(
+    pretrained_path: str,
+    path_to_npz: str,
+    return_raw_prediction: bool = False,
+) -> t.Union[float, t.Tuple[float, t.List[bool]]]:
     # given a npz of 3D tragetories and pretrained_path
     # output the turing time in second
 
@@ -43,7 +48,10 @@ def simple_inference(pretrained_path: str, path_to_npz: str) -> float:
     except:
         pred_turn_time = 0
 
-    return pred_turn_time * 30 / 1000
+    if return_raw_prediction:
+        return pred_turn_time * 30 / 1000, list(preds_postprocess)
+    else:
+        return pred_turn_time * 30 / 1000
 
 
 if __name__ == '__main__':
