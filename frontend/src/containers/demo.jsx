@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 import SimpleDashboard from '../components/simpleDashboard'
+import ProfilePanel from '../components/profilePanel'
 
 function DemoPage({ token }) {
   const [name, setName] = useState('');
@@ -52,18 +53,30 @@ function DemoPage({ token }) {
 
 
   return (
-    <SimpleDashboard
-      name={name}
-      gender={gender}
-      birthday={birthday}
-      diagnose={diagnose}
-      stage={stage}
-      dominantSide={dominantSide}
-      lded={lded}
-      description={description}
-      results={results}
-      token={token}
-    />
+    <div className="padding-block">
+    <div className="container">
+      <div className="row">
+        <div className="col-md-3">
+          <ProfilePanel
+            name={name}
+            gender={gender}
+            birthday={birthday}
+            diagnose={diagnose}
+            stage={stage}
+            dominantSide={dominantSide}
+            lded={lded}
+            description={description}
+          />
+        </div>
+        <div className="col-md-9">
+          <SimpleDashboard
+            results={results}
+            token={token}
+          />
+        </div>
+      </div>
+    </div>
+  </div>
   )
 }
 
