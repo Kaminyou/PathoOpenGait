@@ -104,7 +104,7 @@ function SimpleDashboard({ results, token }) {
     },
     {
       id: 'cadence',
-      label: 'Cadence (1/s)',
+      label: 'Cadence (1/min)',
       minWidth: 100,
       align: 'left',
       color: '#131313',
