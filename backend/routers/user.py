@@ -167,14 +167,14 @@ def request_results():
 
 
 @user_api.route('/request/result', methods=['GET'])
-@jwt_required()
+# @jwt_required()
 def request_result():
     try:
-        account = get_jwt_identity()
-        user_instance = UserModel.find_by_account(account=account)
+        # account = get_jwt_identity()
+        # user_instance = UserModel.find_by_account(account=account)
 
-        if user_instance is None:
-            return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
+        # if user_instance is None:
+        #     return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
 
         submit_uuid = request.args.get('id')
 
@@ -277,12 +277,12 @@ def get_user_profile():
     
 
 @user_api.route('/profile/personal/uuid', methods=['GET'])
-@jwt_required()
+# @jwt_required()
 def get_user_profile_with_uuid():
     try:
-        account = get_jwt_identity()
-        if not UserModel.find_by_account(account=account):
-            return {"msg": "Wrong account or password"}, 401
+        # account = get_jwt_identity()
+        # if not UserModel.find_by_account(account=account):
+        #     return {"msg": "Wrong account or password"}, 401
 
         submit_uuid = request.args.get('id')
         request_object = RequestModel.find_by_submitID(submitUUID=submit_uuid)
@@ -302,17 +302,20 @@ def get_user_profile_with_uuid():
 
 
 @user_api.route('/video', methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def get_video():
-    account = get_jwt_identity()
-    if not UserModel.find_by_account(account=account):
-        return {"msg": "Wrong account or password"}, HTTPStatus.FORBIDDEN
-    
-    video_uuid = request.args.get('id')
-    video_path = f'data/{video_uuid}/output/render.mp4'
+    try:
+        # account = get_jwt_identity()
+        # if not UserModel.find_by_account(account=account):
+        #     return {"msg": "Wrong account or password"}, HTTPStatus.FORBIDDEN
+        
+        video_uuid = request.args.get('id')
+        video_path = f'data/{video_uuid}/output/render.mp4'
 
-    if os.path.exists(video_path):
-        return send_file(video_path), HTTPStatus.OK
+        if os.path.exists(video_path):
+            return send_file(video_path), HTTPStatus.OK
 
-    else:
-        return {"msg": "Internal Server Error!"}, HTTPStatus.FORBIDDEN
+        else:
+            return {"msg": "Internal Server Error!"}, HTTPStatus.FORBIDDEN
+    except Exception:
+        return {"msg": "Internal Server Error!"}, HTTPStatus.INTERNAL_SERVER_ERROR

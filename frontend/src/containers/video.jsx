@@ -97,12 +97,12 @@ function VideoPage({ token }) {
     };
   }, []);
 
-  if (!token) {
-    // Render unauthorized page or redirect to unauthorized route
-    return (
-      <UnauthorizedPage/>
-    )
-  }
+  // if (!token) {
+  //   // Render unauthorized page or redirect to unauthorized route
+  //   return (
+  //     <UnauthorizedPage/>
+  //   )
+  // }
 
   return (
     <div className="padding-block">
