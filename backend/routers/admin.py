@@ -1,8 +1,8 @@
 from http import HTTPStatus
 
-from flask import Blueprint, current_app, jsonify, request
+from flask import Blueprint, current_app, request
 from flask_jwt_extended import (
-    create_access_token, get_jwt, get_jwt_identity, jwt_required, unset_jwt_cookies,
+    get_jwt_identity, jwt_required
 )
 
 from enums.user import UserCategoryEnum
