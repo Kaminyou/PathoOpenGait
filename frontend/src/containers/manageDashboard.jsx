@@ -127,6 +127,29 @@ function ManageDashBoardPage({ token }) {
     });
   }
 
+  const downloadReport = async () => {
+    await axios.get("/api/manage/request/report/download", {
+      headers: {Authorization: 'Bearer ' + token}
+    })
+    .then((data) => {
+      let blob=new Blob([data.data],{type:"application/" + 'csv'});
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob)
+      console.log(data.headers['content-disposition'])
+      const [, filename] = data.headers['content-disposition'].split('filename=');
+      link.download = filename.replace(/^"(.*)"$/, '$1');
+      link.href = url;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    })
+    .catch((e) => {
+      console.log(e)
+      console.log('We were not able to complete your request.');
+    });
+
+  }
+
 
   if (!token) {
     // Render unauthorized page or redirect to unauthorized route
@@ -175,6 +198,7 @@ function ManageDashBoardPage({ token }) {
             lded={lded}
             description={description}
           />
+          <button type="button" className="btn btn-primary btn-block pantoneZOZl" onClick={downloadReport} download='report.csv'>Download All Reports</button>
         </div>
         <div className="col-md-9">
           <SimpleDashboard
