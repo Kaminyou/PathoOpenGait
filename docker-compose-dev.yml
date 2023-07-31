@@ -3,12 +3,17 @@ services:
   frontend:
     build: 
       context: ./frontend/
-      dockerfile: frontend.Dockerfile
+      dockerfile: frontend.dev.Dockerfile
     container_name: gait-web-frontend
+    working_dir: /root/frontend
     ports:
       - 31000:3000
     depends_on:
       - backend
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./frontend:/root/frontend
   backend:
     image: gait-web-backend:latest
     build:
@@ -28,9 +33,12 @@ services:
         reservations:
           devices:
             - capabilities: [gpu]
+    stdin_open: true
+    tty: true
+    ports:
+      - 32000:5000
     volumes:
       - ./backend:/root/backend
-    command: gunicorn -c config.py wsgi:app
     depends_on:
       - db
   db:
