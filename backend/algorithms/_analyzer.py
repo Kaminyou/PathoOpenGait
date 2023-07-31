@@ -12,7 +12,7 @@ class Analyzer(ABC):
     @abstractmethod
     def run(
         self,
-        data_root_dir,
-        file_id,
+        data_root_dir: str,
+        file_id: str,
     ) -> t.List[t.Dict[str, t.Any]]:
         pass
