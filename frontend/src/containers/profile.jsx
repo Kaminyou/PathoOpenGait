@@ -274,12 +274,12 @@ function ProfilePage({ token }) {
                 </div>
 
                 <div className="form-group">
-                <label className="col-sm-2 control-label">LDED</label>
+                <label className="col-sm-2 control-label">LEDD</label>
                 <div className="col-sm-10">
                     <input
                     type="text"
                     className="form-control"
-                    placeholder="LDED"
+                    placeholder="LEDD"
                     value={lded}
                     onChange={handleLDEDChange}
                     />

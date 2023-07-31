@@ -22,7 +22,7 @@ function ProfilePanel({ name, gender, birthday, diagnose, stage, dominantSide, l
 				<div className="panel-body">
 					<h4>Additional Information</h4>
 					<p><strong>Dominant Side:</strong> {dominantSide}</p>
-					<p><strong>LDED:</strong> {lded}</p>
+					<p><strong>LEDD:</strong> {lded}</p>
 					<p><strong>Description:</strong> {description}</p>
 				</div>
 			</div>
