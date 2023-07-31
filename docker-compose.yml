@@ -6,7 +6,7 @@ services:
       dockerfile: frontend.Dockerfile
     container_name: gait-web-frontend
     ports:
-      - 31000:3000
+      - 31000:80
     depends_on:
       - backend
   backend:
@@ -30,7 +30,7 @@ services:
             - capabilities: [gpu]
     volumes:
       - ./backend:/root/backend
-    command: gunicorn -c config.py wsgi:app
+    command: python3 -m gunicorn -c config.py wsgi:app
     depends_on:
       - db
   db:
