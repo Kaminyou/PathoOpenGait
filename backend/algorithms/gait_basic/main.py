@@ -44,10 +44,14 @@ class BasicGaitAnalyzer(Analyzer):
             os.remove('algorithms/gait_basic/zGait/input/2001-01-01-1/2001-01-01-1-1.csv')
         if os.path.exists('algorithms/gait_basic/zGait/output/2001-01-01-1/'):
             shutil.rmtree('algorithms/gait_basic/zGait/output/2001-01-01-1/')
-        shutil.copyfile(source_csv, 'algorithms/gait_basic/zGait/input/2001-01-01-1/2001-01-01-1-1.csv')
-        os.system('cd algorithms/gait_basic/zGait && Rscript gait_batch.R input/20010101.csv')
-        shutil.copyfile('algorithms/gait_basic/zGait/output/2001-01-01-1/2001-01-01-1.csv', output_csv)
-        shutil.copyfile('algorithms/gait_basic/zGait/output/2001-01-01-1/1_stride/2001-01-01-1-1.csv', output_stride_csv)
+
+        try:
+            shutil.copyfile(source_csv, 'algorithms/gait_basic/zGait/input/2001-01-01-1/2001-01-01-1-1.csv')
+            os.system('cd algorithms/gait_basic/zGait && Rscript gait_batch.R input/20010101.csv')
+            shutil.copyfile('algorithms/gait_basic/zGait/output/2001-01-01-1/2001-01-01-1.csv', output_csv)
+            shutil.copyfile('algorithms/gait_basic/zGait/output/2001-01-01-1/1_stride/2001-01-01-1-1.csv', output_stride_csv)
+        except:
+            print('No 3D csv')
 
         os.system(
             'cd algorithms/gait_basic/VideoPose3D && python3 quick_run.py '
@@ -65,27 +69,36 @@ class BasicGaitAnalyzer(Analyzer):
         with open(output_raw_turn_time_prediction_path, 'wb') as handle:
             pickle.dump(raw_tt_prediction, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-        df = pd.read_csv(output_csv, index_col=0)
+        sl = -1
+        sw = -1
+        st = -1
+        cadence = -1
+        velocity = -1
 
-        table = df.T['total'].T
+        try:
+            df = pd.read_csv(output_csv, index_col=0)
 
-        left_n = table['left.size']
-        right_n = table['right.size']
-        left_sl = table['left.stride.lt.mu']
-        right_sl = table['right.stride.lt.mu']
-        left_sw = table['left.stride.wt.mu']
-        right_sw = table['right.stride.wt.mu']
-        left_st = table['left.stride.t.mu']
-        right_st = table['right.stride.t.mu']
-        #tt = table['turn.t']
-        cadence = table['cadence']
-        velocity = table['velocity']
+            table = df.T['total'].T
+
+            left_n = table['left.size']
+            right_n = table['right.size']
+            left_sl = table['left.stride.lt.mu']
+            right_sl = table['right.stride.lt.mu']
+            left_sw = table['left.stride.wt.mu']
+            right_sw = table['right.stride.wt.mu']
+            left_st = table['left.stride.t.mu']
+            right_st = table['right.stride.t.mu']
+            #tt = table['turn.t']
+            cadence = table['cadence']
+            velocity = table['velocity']
 
 
-        sl = avg(left_sl, right_sl, left_n, right_n)
-        sw = avg(left_sw, right_sw, left_n, right_n)
-        st = avg(left_st, right_st, left_n, right_n)
-        #print(sl, sw, st, cadence, velocity, tt)
+            sl = avg(left_sl, right_sl, left_n, right_n)
+            sw = avg(left_sw, right_sw, left_n, right_n)
+            st = avg(left_st, right_st, left_n, right_n)
+            #print(sl, sw, st, cadence, velocity, tt)
+        except Exception as e:
+            print(e)
 
         try:
             render(data_root_dir=data_root_dir)
