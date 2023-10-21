@@ -12,3 +12,4 @@ Each row should be:
 time (ms), left_y (mm), left_x (mm), left_z (mm), right_y (mm), right_x (mm), right_z (mm), 
 ```
 *N* rows represent your record has *N* timeframe. A header for this file is not required.
+**Caution:** Please note that the performance would not be guaranteed in this case!
