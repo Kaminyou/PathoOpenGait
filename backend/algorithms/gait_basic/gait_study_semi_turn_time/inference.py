@@ -11,6 +11,10 @@ from .src.models import SignalNet
 from .src.utils import group_continuous_ones
 
 
+def signal_verifier(signal):
+    return np.any(np.isnan(signal))
+
+
 def simple_inference(
     pretrained_path: str,
     path_to_npz: str,
@@ -31,6 +35,8 @@ def simple_inference(
         preds = []
         probs = []
         for signal in gait_instance.generate_all_signal_segments_without_answer():
+            if signal_verifier(signal):
+                return -1
             signal = torch.FloatTensor(signal[None, :, :])
             logit = model(signal)
             pred = torch.argmax(logit, dim=1)
