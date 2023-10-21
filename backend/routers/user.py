@@ -66,7 +66,11 @@ def upload_gait_csv():
         os.makedirs(data_root)
         os.makedirs(os.path.join(data_root, 'csv'))
         os.makedirs(os.path.join(data_root, 'video'))
-        csv_file.save(os.path.join(data_root, 'csv', 'uploaded.csv'))
+        try:
+            csv_file.save(os.path.join(data_root, 'csv', 'uploaded.csv'))
+        except Exception:
+            current_app.logger.info(f'{account} submit with no 3D csv')
+        # csv_file.save(os.path.join(data_root, 'csv', 'uploaded.csv'))
         mp4_file.save(os.path.join(data_root, 'video', 'uploaded.mp4'))
         request_obj.save_to_db()
         try:
