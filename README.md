@@ -1,4 +1,8 @@
 # PathoOpenGait
+![image](./misc/pathoopengait-teaser.png)
+
+## System design (Microservice architecture)
+![image](./misc/pathoopengait-system.png)
 
 ## Get started
 1. Please execute `setup.sh` to download pretrained weights for several models.
