@@ -44,6 +44,9 @@ COPY ./requirements.txt /tmp/requirements.txt
 RUN pip install -r /tmp/requirements.txt
 RUN rm /tmp/requirements.txt
 
+RUN apt-get update && apt-get install -y docker.io
+RUN pip3 install docker
+
 
 # COPY ./backend/ /root/backend/
 # WORKDIR /root/backend/

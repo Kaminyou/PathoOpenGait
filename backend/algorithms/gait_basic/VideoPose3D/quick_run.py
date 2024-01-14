@@ -22,15 +22,22 @@ if __name__ == '__main__':
         help='/home/kaminyou/repos/PathoOpenGait/backend/algorithms/gait_basic/VideoPose3D/mydata/keypoint_3d/',
         type=str,
     )
+    parser.add_argument(
+        '--targeted-person-bboxes-path',
+        type=str,
+        default='',
+        help='targeted person bboxes path',
+    )
     args = parser.parse_args()
 
     mp4_video_folder = args.mp4_video_folder
     keypoint_2D_video_folder = args.keypoint_2D_video_folder
     keypoint_3D_video_folder = args.keypoint_3D_video_folder
+    targeted_person_bboxes_path = args.targeted_person_bboxes_path
 
     os.system(f"cd inference && python infer_video_d2.py --cfg COCO-Keypoints/keypoint_rcnn_R_101_FPN_3x.yaml --output-dir {keypoint_2D_video_folder} --image-ext mp4 {mp4_video_folder}")
 
-    os.system(f"cd data && python3 prepare_data_2d_custom.py -i {keypoint_2D_video_folder} -o myvideos")
+    os.system(f"cd data && python3 prepare_data_2d_custom.py -i {keypoint_2D_video_folder} -o myvideos --targeted-person-bboxes-path {targeted_person_bboxes_path}")
 
     num_of_file = len(os.listdir(mp4_video_folder))
     for idx, file in enumerate(os.listdir(mp4_video_folder)):
