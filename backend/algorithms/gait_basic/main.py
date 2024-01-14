@@ -201,142 +201,142 @@ class SVOGaitAnalyzer(Analyzer):
         output_raw_turn_time_prediction_path = os.path.join(data_root_dir, 'output', f'{file_id}-tt.pickle')
         output_shown_mp4_path = os.path.join(data_root_dir, 'output', 'render.mp4')
 
-        # # convert to avi
-        # run_container(
-        #     image='zed-env:latest',
-        #     command=f'python3 /root/svo_export.py "{source_svo_path}" "{meta_avi_path}" 0',
-        #     volumes={
-        #         MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
-        #     },
-        #     working_dir=WORK_DIR,
-        #     device_requests=[
-        #         docker.types.DeviceRequest(device_ids=['0'], capabilities=[['gpu']]),
-        #     ],
-        # )
+        # convert to avi
+        run_container(
+            image='zed-env:latest',
+            command=f'python3 /root/svo_export.py "{source_svo_path}" "{meta_avi_path}" 0',
+            volumes={
+                MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
+            },
+            working_dir=WORK_DIR,
+            device_requests=[
+                docker.types.DeviceRequest(device_ids=['0'], capabilities=[['gpu']]),
+            ],
+        )
 
-        # # avi to mp4 (rotate 90 clockwisely)
-        # run_container(
-        #     image='zed-env:latest',
-        #     command=f'python3 /root/avi_to_mp4.py --avi-path "{meta_avi_path}" --mp4-path "{meta_mp4_path}"',
-        #     volumes={
-        #         MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
-        #     },
-        #     working_dir=WORK_DIR,
-        #     device_requests=[
-        #         docker.types.DeviceRequest(device_ids=['0'], capabilities=[['gpu']]),
-        #     ],
-        # )
+        # avi to mp4 (rotate 90 clockwisely)
+        run_container(
+            image='zed-env:latest',
+            command=f'python3 /root/avi_to_mp4.py --avi-path "{meta_avi_path}" --mp4-path "{meta_mp4_path}"',
+            volumes={
+                MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
+            },
+            working_dir=WORK_DIR,
+            device_requests=[
+                docker.types.DeviceRequest(device_ids=['0'], capabilities=[['gpu']]),
+            ],
+        )
 
-        # # openpose
-        # run_container(
-        #     image='openpose-env:latest',
-        #     command=(
-        #         f'./build/examples/openpose/openpose.bin '
-        #         f'--video {meta_avi_path} --write-video {meta_keypoints_avi_path} '
-        #         f'--write-json {meta_json_path} --frame_rotate 270 --camera_resolution 1920x1080 '
-        #         f'--tracking 0 --number_people_max 1 --display 0'
-        #     ),
-        #     volumes={
-        #         MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
-        #     },
-        #     working_dir='/openpose',
-        #     device_requests=[
-        #         docker.types.DeviceRequest(device_ids=['0'], capabilities=[['gpu']]),
-        #     ],
-        # )
+        # openpose
+        run_container(
+            image='openpose-env:latest',
+            command=(
+                f'./build/examples/openpose/openpose.bin '
+                f'--video {meta_avi_path} --write-video {meta_keypoints_avi_path} '
+                f'--write-json {meta_json_path} --frame_rotate 270 --camera_resolution 1920x1080 '
+                f'--tracking 0 --number_people_max 1 --display 0'
+            ),
+            volumes={
+                MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
+            },
+            working_dir='/openpose',
+            device_requests=[
+                docker.types.DeviceRequest(device_ids=['0'], capabilities=[['gpu']]),
+            ],
+        )
 
-        # # tracking
-        # run_container(
-        #     image='tracking-env:latest',
-        #     command=(
-        #         f'python3 /root/track.py '
-        #         f'--source "{meta_mp4_path}" '
-        #         f'--yolo-model yolov8s.pt '
-        #         f'--classes 0 --tracking-method deepocsort '
-        #         f'--reid-model clip_market1501.pt '
-        #         f'--save-mot --save-mot-path {meta_mot_path} --device cpu'
-        #     ),
-        #     volumes={
-        #         MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
-        #     },
-        #     working_dir='/root',  # sync with the dry run during the building phase
-        #     device_requests=[
-        #         docker.types.DeviceRequest(device_ids=['0'], capabilities=[['gpu']]),
-        #     ],
-        # )
-        # shutil.copytree(meta_json_path, meta_backup_json_path, dirs_exist_ok=True)
-        # mot_dict = load_mot_file(meta_mot_path)
-        # count = count_json_file(meta_json_path)
-        # targeted_person_ids, targeted_person_bboxes = find_continuous_personal_bbox(count, mot_dict)
+        # tracking
+        run_container(
+            image='tracking-env:latest',
+            command=(
+                f'python3 /root/track.py '
+                f'--source "{meta_mp4_path}" '
+                f'--yolo-model yolov8s.pt '
+                f'--classes 0 --tracking-method deepocsort '
+                f'--reid-model clip_market1501.pt '
+                f'--save-mot --save-mot-path {meta_mot_path} --device cpu'
+            ),
+            volumes={
+                MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
+            },
+            working_dir='/root',  # sync with the dry run during the building phase
+            device_requests=[
+                docker.types.DeviceRequest(device_ids=['0'], capabilities=[['gpu']]),
+            ],
+        )
+        shutil.copytree(meta_json_path, meta_backup_json_path, dirs_exist_ok=True)
+        mot_dict = load_mot_file(meta_mot_path)
+        count = count_json_file(meta_json_path)
+        targeted_person_ids, targeted_person_bboxes = find_continuous_personal_bbox(count, mot_dict)
 
-        # with open(meta_targeted_person_bboxes_path, 'wb') as handle:
-        #     pickle.dump(targeted_person_bboxes, handle, protocol=pickle.HIGHEST_PROTOCOL)
+        with open(meta_targeted_person_bboxes_path, 'wb') as handle:
+            pickle.dump(targeted_person_bboxes, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-        # remove_non_target_person(meta_json_path, targeted_person_bboxes)
+        remove_non_target_person(meta_json_path, targeted_person_bboxes)
 
-        # # only allow after start line
-        # set_zero_prob_for_keypoint_before_start_line(
-        #     json_path=meta_json_path,
-        #     start_line=START_LINE,
-        # )
+        # only allow after start line
+        set_zero_prob_for_keypoint_before_start_line(
+            json_path=meta_json_path,
+            start_line=START_LINE,
+        )
 
-        # # render_removed_result
-        # run_container(
-        #     image='zed-env:latest',
-        #     command=(
-        #         f'python3 /root/result_render.py --mp4-path "{meta_mp4_path}" '
-        #         f'--json-path "{meta_json_path}" '
-        #         f'--targeted-person-bboxes-path "{meta_targeted_person_bboxes_path}" '
-        #         f'--rendered-mp4-path "{meta_rendered_mp4_path}"'
-        #     ),
-        #     volumes={
-        #         MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
-        #     },
-        #     working_dir=WORK_DIR,
-        #     device_requests=[
-        #         docker.types.DeviceRequest(device_ids=['0'], capabilities=[['gpu']]),
-        #     ],
-        # )
+        # render_removed_result
+        run_container(
+            image='zed-env:latest',
+            command=(
+                f'python3 /root/result_render.py --mp4-path "{meta_mp4_path}" '
+                f'--json-path "{meta_json_path}" '
+                f'--targeted-person-bboxes-path "{meta_targeted_person_bboxes_path}" '
+                f'--rendered-mp4-path "{meta_rendered_mp4_path}"'
+            ),
+            volumes={
+                MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
+            },
+            working_dir=WORK_DIR,
+            device_requests=[
+                docker.types.DeviceRequest(device_ids=['0'], capabilities=[['gpu']]),
+            ],
+        )
 
-        # # get xyz
-        # run_container(
-        #     image='zed-env:latest',
-        #     command=(
-        #         f'/root/depth-sensing/cpp/build/ZED_Depth_Sensing '
-        #         f'{meta_json_path} {source_txt_path} {source_svo_path} {meta_csv_path}'
-        #     ),
-        #     volumes={
-        #         MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
-        #     },
-        #     working_dir=WORK_DIR,
-        #     device_requests=[
-        #         docker.types.DeviceRequest(device_ids=['0'], capabilities=[['gpu']]),
-        #     ],
-        # )
+        # get xyz
+        run_container(
+            image='zed-env:latest',
+            command=(
+                f'/root/depth-sensing/cpp/build/ZED_Depth_Sensing '
+                f'{meta_json_path} {source_txt_path} {source_svo_path} {meta_csv_path}'
+            ),
+            volumes={
+                MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
+            },
+            working_dir=WORK_DIR,
+            device_requests=[
+                docker.types.DeviceRequest(device_ids=['0'], capabilities=[['gpu']]),
+            ],
+        )
 
-        # # old pipeline
-        # shutil.copyfile(meta_mp4_path, source_mp4_path)
+        # old pipeline
+        shutil.copyfile(meta_mp4_path, source_mp4_path)
 
-        # if os.path.exists('algorithms/gait_basic/zGait/input/2001-01-01-1/2001-01-01-1-1.csv'):
-        #     os.remove('algorithms/gait_basic/zGait/input/2001-01-01-1/2001-01-01-1-1.csv')
-        # if os.path.exists('algorithms/gait_basic/zGait/output/2001-01-01-1/'):
-        #     shutil.rmtree('algorithms/gait_basic/zGait/output/2001-01-01-1/')
+        if os.path.exists('algorithms/gait_basic/zGait/input/2001-01-01-1/2001-01-01-1-1.csv'):
+            os.remove('algorithms/gait_basic/zGait/input/2001-01-01-1/2001-01-01-1-1.csv')
+        if os.path.exists('algorithms/gait_basic/zGait/output/2001-01-01-1/'):
+            shutil.rmtree('algorithms/gait_basic/zGait/output/2001-01-01-1/')
 
-        # try:
-        #     shutil.copyfile(meta_csv_path, 'algorithms/gait_basic/zGait/input/2001-01-01-1/2001-01-01-1-1.csv')
-        #     os.system('cd algorithms/gait_basic/zGait && Rscript gait_batch.R input/20010101.csv')
-        #     shutil.copyfile('algorithms/gait_basic/zGait/output/2001-01-01-1/2001-01-01-1.csv', output_csv)
-        #     shutil.copyfile('algorithms/gait_basic/zGait/output/2001-01-01-1/1_stride/2001-01-01-1-1.csv', output_stride_csv)
-        # except:
-        #     print('No 3D csv')
+        try:
+            shutil.copyfile(meta_csv_path, 'algorithms/gait_basic/zGait/input/2001-01-01-1/2001-01-01-1-1.csv')
+            os.system('cd algorithms/gait_basic/zGait && Rscript gait_batch.R input/20010101.csv')
+            shutil.copyfile('algorithms/gait_basic/zGait/output/2001-01-01-1/2001-01-01-1.csv', output_csv)
+            shutil.copyfile('algorithms/gait_basic/zGait/output/2001-01-01-1/1_stride/2001-01-01-1-1.csv', output_stride_csv)
+        except:
+            print('No 3D csv')
 
-        # os.system(
-        #     'cd algorithms/gait_basic/VideoPose3D && python3 quick_run.py '
-        #     f'--mp4_video_folder "{source_mp4_folder}" '
-        #     f'--keypoint_2D_video_folder "{output_2dkeypoint_folder}" '
-        #     f'--keypoint_3D_video_folder "{output_3dkeypoint_folder}" '
-        #     f'--targeted-person-bboxes-path "{meta_targeted_person_bboxes_path}"'
-        # )
+        os.system(
+            'cd algorithms/gait_basic/VideoPose3D && python3 quick_run.py '
+            f'--mp4_video_folder "{source_mp4_folder}" '
+            f'--keypoint_2D_video_folder "{output_2dkeypoint_folder}" '
+            f'--keypoint_3D_video_folder "{output_3dkeypoint_folder}" '
+            f'--targeted-person-bboxes-path "{meta_targeted_person_bboxes_path}"'
+        )
 
         tt, raw_tt_prediction = simple_inference(
             pretrained_path=self.pretrained_path,
