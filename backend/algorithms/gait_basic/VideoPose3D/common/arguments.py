@@ -12,6 +12,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Training script')
 
     # General arguments
+    parser.add_argument('--custom-dataset-path', default='', type=str)
     parser.add_argument('-d', '--dataset', default='h36m', type=str, metavar='NAME', help='target dataset') # h36m or humaneva
     parser.add_argument('-k', '--keypoints', default='cpn_ft_h36m_dbb', type=str, metavar='NAME', help='2D detections to use')
     parser.add_argument('-str', '--subjects-train', default='S1,S5,S6,S7,S8', type=str, metavar='LIST',

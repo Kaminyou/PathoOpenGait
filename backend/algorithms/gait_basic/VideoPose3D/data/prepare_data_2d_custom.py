@@ -136,6 +136,7 @@ if __name__ == '__main__':
     parser.add_argument('-i', '--input', type=str, default='', metavar='PATH', help='detections directory')
     parser.add_argument('-o', '--output', type=str, default='', metavar='PATH', help='output suffix for 2D detections')
     parser.add_argument('--targeted-person-bboxes-path', type=str, default='', help='targeted person bboxes path')
+    parser.add_argument('--custom-dataset-path', type=str, default='')
     args = parser.parse_args()
     
     if not args.input:
@@ -169,5 +170,8 @@ if __name__ == '__main__':
         metadata['video_metadata'][canonical_name] = video_metadata
 
     print('Saving...')
-    np.savez_compressed(output_prefix_2d + args.output, positions_2d=output, metadata=metadata)
+    if args.custom_dataset_path != '':
+        np.savez_compressed(args.custom_dataset_path, positions_2d=output, metadata=metadata)
+    else:
+        np.savez_compressed(output_prefix_2d + args.output, positions_2d=output, metadata=metadata)
     print('Done.')

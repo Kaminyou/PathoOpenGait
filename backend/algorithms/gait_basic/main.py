@@ -198,52 +198,53 @@ class SVOGaitAnalyzer(Analyzer):
         output_2dkeypoint_path = os.path.join(data_root_dir, 'output', '2d', f'{file_id}.mp4.npz')
         output_3dkeypoint_folder = os.path.join(data_root_dir, 'output', '3d')
         output_3dkeypoint_path = os.path.join(data_root_dir, 'output', '3d', f'{file_id}.mp4.npy')
+        meta_custom_dataset_path = os.path.join(data_root_dir, 'output', f'{file_id}-custom-dataset.npz')
         output_raw_turn_time_prediction_path = os.path.join(data_root_dir, 'output', f'{file_id}-tt.pickle')
         output_shown_mp4_path = os.path.join(data_root_dir, 'output', 'render.mp4')
 
-        # convert to avi
-        run_container(
-            image='zed-env:latest',
-            command=f'python3 /root/svo_export.py "{source_svo_path}" "{meta_avi_path}" 0',
-            volumes={
-                MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
-            },
-            working_dir=WORK_DIR,
-            device_requests=[
-                docker.types.DeviceRequest(device_ids=['0'], capabilities=[['gpu']]),
-            ],
-        )
+        # # convert to avi
+        # run_container(
+        #     image='zed-env:latest',
+        #     command=f'python3 /root/svo_export.py "{source_svo_path}" "{meta_avi_path}" 0',
+        #     volumes={
+        #         MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
+        #     },
+        #     working_dir=WORK_DIR,
+        #     device_requests=[
+        #         docker.types.DeviceRequest(device_ids=['0'], capabilities=[['gpu']]),
+        #     ],
+        # )
 
-        # avi to mp4 (rotate 90 clockwisely)
-        run_container(
-            image='zed-env:latest',
-            command=f'python3 /root/avi_to_mp4.py --avi-path "{meta_avi_path}" --mp4-path "{meta_mp4_path}"',
-            volumes={
-                MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
-            },
-            working_dir=WORK_DIR,
-            device_requests=[
-                docker.types.DeviceRequest(device_ids=['0'], capabilities=[['gpu']]),
-            ],
-        )
+        # # avi to mp4 (rotate 90 clockwisely)
+        # run_container(
+        #     image='zed-env:latest',
+        #     command=f'python3 /root/avi_to_mp4.py --avi-path "{meta_avi_path}" --mp4-path "{meta_mp4_path}"',
+        #     volumes={
+        #         MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
+        #     },
+        #     working_dir=WORK_DIR,
+        #     device_requests=[
+        #         docker.types.DeviceRequest(device_ids=['0'], capabilities=[['gpu']]),
+        #     ],
+        # )
 
-        # openpose
-        run_container(
-            image='openpose-env:latest',
-            command=(
-                f'./build/examples/openpose/openpose.bin '
-                f'--video {meta_avi_path} --write-video {meta_keypoints_avi_path} '
-                f'--write-json {meta_json_path} --frame_rotate 270 --camera_resolution 1920x1080 '
-                f'--tracking 0 --number_people_max 1 --display 0'
-            ),
-            volumes={
-                MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
-            },
-            working_dir='/openpose',
-            device_requests=[
-                docker.types.DeviceRequest(device_ids=['0'], capabilities=[['gpu']]),
-            ],
-        )
+        # # openpose
+        # run_container(
+        #     image='openpose-env:latest',
+        #     command=(
+        #         f'./build/examples/openpose/openpose.bin '
+        #         f'--video {meta_avi_path} --write-video {meta_keypoints_avi_path} '
+        #         f'--write-json {meta_json_path} --frame_rotate 270 --camera_resolution 1920x1080 '
+        #         f'--tracking 0 --number_people_max 1 --display 0'
+        #     ),
+        #     volumes={
+        #         MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
+        #     },
+        #     working_dir='/openpose',
+        #     device_requests=[
+        #         docker.types.DeviceRequest(device_ids=['0'], capabilities=[['gpu']]),
+        #     ],
+        # )
 
         # tracking
         run_container(
@@ -254,7 +255,7 @@ class SVOGaitAnalyzer(Analyzer):
                 f'--yolo-model yolov8s.pt '
                 f'--classes 0 --tracking-method deepocsort '
                 f'--reid-model clip_market1501.pt '
-                f'--save-mot --save-mot-path {meta_mot_path} --device cpu'
+                f'--save-mot --save-mot-path {meta_mot_path} --device cuda:0'
             ),
             volumes={
                 MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
@@ -335,7 +336,8 @@ class SVOGaitAnalyzer(Analyzer):
             f'--mp4_video_folder "{source_mp4_folder}" '
             f'--keypoint_2D_video_folder "{output_2dkeypoint_folder}" '
             f'--keypoint_3D_video_folder "{output_3dkeypoint_folder}" '
-            f'--targeted-person-bboxes-path "{meta_targeted_person_bboxes_path}"'
+            f'--targeted-person-bboxes-path "{meta_targeted_person_bboxes_path}" '
+            f'--custom-dataset-path "{meta_custom_dataset_path}"'
         )
 
         tt, raw_tt_prediction = simple_inference(
