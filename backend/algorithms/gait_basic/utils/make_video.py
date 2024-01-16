@@ -84,8 +84,6 @@ def render(data_root_dir: str):
 
 def new_render(
     video_path: str,
-    csv_path: str,
-    raw_csv_path: str,
     keypoint_path: str,
     tt_pickle_path: str,
     output_video_path: str,
@@ -93,9 +91,6 @@ def new_render(
 
     with open(tt_pickle_path, 'rb') as handle:
         raw_tt = pickle.load(handle)
-
-    df = pd.read_csv(csv_path, header=0)
-    raw_df = pd.read_csv(raw_csv_path, names=["time", "left.y", "left.x", "left.dt", "right.y", "right.x", "right.dt"])
 
     # segmentations = raw_df[['time']].join(df[['time', 'step.leg']], lsuffix='time', rsuffix='time').fillna('-')['step.leg'].values
 
@@ -123,15 +118,15 @@ def new_render(
             ax.imshow(frames[frame_id][:, :, ::-1])
             xx = kepoints.f.keypoints[frame_id][1].reshape(-1, 17)[0, :]
             yy = kepoints.f.keypoints[frame_id][1].reshape(-1, 17)[1, :]
-            ax.scatter(
-                x=xx,
-                y=yy,
-                s=15,
-                color='crimson')
-            ax.plot([xx[10], xx[8], xx[6], xx[5], xx[7], xx[9]], [yy[10], yy[8], yy[6], yy[5], yy[7], yy[9]], color='crimson')
-            ax.plot([xx[6], xx[12], xx[14], xx[16]], [yy[6], yy[12], yy[14], yy[16]], color='crimson')
-            ax.plot([xx[5], xx[11], xx[13], xx[15]], [yy[5], yy[11], yy[13], yy[15]], color='crimson')
-            ax.plot([xx[12], xx[11]], [yy[12], yy[11]], color='crimson')
+            # ax.scatter(
+            #     x=xx,
+            #     y=yy,
+            #     s=15,
+            #     color='crimson')
+            # ax.plot([xx[10], xx[8], xx[6], xx[5], xx[7], xx[9]], [yy[10], yy[8], yy[6], yy[5], yy[7], yy[9]], color='crimson')
+            # ax.plot([xx[6], xx[12], xx[14], xx[16]], [yy[6], yy[12], yy[14], yy[16]], color='crimson')
+            # ax.plot([xx[5], xx[11], xx[13], xx[15]], [yy[5], yy[11], yy[13], yy[15]], color='crimson')
+            # ax.plot([xx[12], xx[11]], [yy[12], yy[11]], color='crimson')
             
             # Annotate the current frame type
             #current_frame_type = segmentations[frame_id]

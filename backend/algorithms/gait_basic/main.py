@@ -22,6 +22,14 @@ def avg(l, r, nl, nr):
     return (l * nl + r * nr) / (nl + nr)
 
 
+def replace_in_filenames(path, old_string, new_string):
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            if old_string in file:
+                new_file = file.replace(old_string, new_string)
+                os.rename(os.path.join(root, file), os.path.join(root, new_file))
+
+
 class BasicGaitAnalyzer(Analyzer):
     def __init__(
         self,
@@ -193,7 +201,6 @@ class SVOGaitAnalyzer(Analyzer):
         source_mp4_folder = os.path.join(data_root_dir, 'video')
         source_mp4_path = os.path.join(data_root_dir, 'video', f'{file_id}.mp4')
         output_csv = os.path.join(data_root_dir, 'output', f'{file_id}.csv')
-        output_stride_csv = os.path.join(data_root_dir, 'output', f'{file_id}_stride.csv')
         output_2dkeypoint_folder = os.path.join(data_root_dir, 'output', '2d')
         output_2dkeypoint_path = os.path.join(data_root_dir, 'output', '2d', f'{file_id}.mp4.npz')
         output_3dkeypoint_folder = os.path.join(data_root_dir, 'output', '3d')
@@ -201,50 +208,51 @@ class SVOGaitAnalyzer(Analyzer):
         meta_custom_dataset_path = os.path.join(data_root_dir, 'output', f'{file_id}-custom-dataset.npz')
         output_raw_turn_time_prediction_path = os.path.join(data_root_dir, 'output', f'{file_id}-tt.pickle')
         output_shown_mp4_path = os.path.join(data_root_dir, 'output', 'render.mp4')
+        output_gait_folder = os.path.join(data_root_dir, 'output', f'{file_id}-rgait-output/')
 
-        # # convert to avi
-        # run_container(
-        #     image='zed-env:latest',
-        #     command=f'python3 /root/svo_export.py "{source_svo_path}" "{meta_avi_path}" 0',
-        #     volumes={
-        #         MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
-        #     },
-        #     working_dir=WORK_DIR,
-        #     device_requests=[
-        #         docker.types.DeviceRequest(device_ids=['0'], capabilities=[['gpu']]),
-        #     ],
-        # )
+        # convert to avi
+        run_container(
+            image='zed-env:latest',
+            command=f'python3 /root/svo_export.py "{source_svo_path}" "{meta_avi_path}" 0',
+            volumes={
+                MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
+            },
+            working_dir=WORK_DIR,
+            device_requests=[
+                docker.types.DeviceRequest(device_ids=['0'], capabilities=[['gpu']]),
+            ],
+        )
 
-        # # avi to mp4 (rotate 90 clockwisely)
-        # run_container(
-        #     image='zed-env:latest',
-        #     command=f'python3 /root/avi_to_mp4.py --avi-path "{meta_avi_path}" --mp4-path "{meta_mp4_path}"',
-        #     volumes={
-        #         MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
-        #     },
-        #     working_dir=WORK_DIR,
-        #     device_requests=[
-        #         docker.types.DeviceRequest(device_ids=['0'], capabilities=[['gpu']]),
-        #     ],
-        # )
+        # avi to mp4 (rotate 90 clockwisely)
+        run_container(
+            image='zed-env:latest',
+            command=f'python3 /root/avi_to_mp4.py --avi-path "{meta_avi_path}" --mp4-path "{meta_mp4_path}"',
+            volumes={
+                MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
+            },
+            working_dir=WORK_DIR,
+            device_requests=[
+                docker.types.DeviceRequest(device_ids=['0'], capabilities=[['gpu']]),
+            ],
+        )
 
-        # # openpose
-        # run_container(
-        #     image='openpose-env:latest',
-        #     command=(
-        #         f'./build/examples/openpose/openpose.bin '
-        #         f'--video {meta_avi_path} --write-video {meta_keypoints_avi_path} '
-        #         f'--write-json {meta_json_path} --frame_rotate 270 --camera_resolution 1920x1080 '
-        #         f'--tracking 0 --number_people_max 1 --display 0'
-        #     ),
-        #     volumes={
-        #         MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
-        #     },
-        #     working_dir='/openpose',
-        #     device_requests=[
-        #         docker.types.DeviceRequest(device_ids=['0'], capabilities=[['gpu']]),
-        #     ],
-        # )
+        # openpose
+        run_container(
+            image='openpose-env:latest',
+            command=(
+                f'./build/examples/openpose/openpose.bin '
+                f'--video {meta_avi_path} --write-video {meta_keypoints_avi_path} '
+                f'--write-json {meta_json_path} --frame_rotate 270 --camera_resolution 1920x1080 '
+                f'--tracking 0 --number_people_max 1 --display 0'
+            ),
+            volumes={
+                MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
+            },
+            working_dir='/openpose',
+            device_requests=[
+                docker.types.DeviceRequest(device_ids=['0'], capabilities=[['gpu']]),
+            ],
+        )
 
         # tracking
         run_container(
@@ -326,8 +334,9 @@ class SVOGaitAnalyzer(Analyzer):
         try:
             shutil.copyfile(meta_csv_path, 'algorithms/gait_basic/zGait/input/2001-01-01-1/2001-01-01-1-1.csv')
             os.system('cd algorithms/gait_basic/zGait && Rscript gait_batch.R input/20010101.csv')
+            shutil.copytree('algorithms/gait_basic/zGait/output/2001-01-01-1/', output_gait_folder)
+            replace_in_filenames(output_gait_folder, '2001-01-01-1', file_id)
             shutil.copyfile('algorithms/gait_basic/zGait/output/2001-01-01-1/2001-01-01-1.csv', output_csv)
-            shutil.copyfile('algorithms/gait_basic/zGait/output/2001-01-01-1/1_stride/2001-01-01-1-1.csv', output_stride_csv)
         except:
             print('No 3D csv')
 
@@ -382,9 +391,8 @@ class SVOGaitAnalyzer(Analyzer):
 
         try:
             new_render(
-                video_path=source_mp4_path,
-                csv_path=output_stride_csv,
-                raw_csv_path=meta_csv_path,
+                # video_path=source_mp4_path,
+                video_path=meta_rendered_mp4_path,
                 keypoint_path=output_2dkeypoint_path,
                 tt_pickle_path=output_raw_turn_time_prediction_path,
                 output_video_path=output_shown_mp4_path,
