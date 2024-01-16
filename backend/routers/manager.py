@@ -162,18 +162,18 @@ def manager_upload_gait_csv():
 
         submit_uuid = request_obj.submitUUID
 
-        csv_file = request.files['csvFile']
-        mp4_file = request.files['mp4File']
+        svo_file = request.files['svoFile']
+        txt_file = request.files['txtFile']
 
         data_root = f'data/{submit_uuid}'
         os.makedirs(data_root)
-        os.makedirs(os.path.join(data_root, 'csv'))
-        os.makedirs(os.path.join(data_root, 'video'))
+        os.makedirs(os.path.join(data_root, 'input'))
         try:
-            csv_file.save(os.path.join(data_root, 'csv', 'uploaded.csv'))
+            svo_file.save(os.path.join(data_root, 'input', 'uploaded.svo'))
         except Exception:
             current_app.logger.info(f'{account} submit with no 3D csv')
-        mp4_file.save(os.path.join(data_root, 'video', 'uploaded.mp4'))
+        # csv_file.save(os.path.join(data_root, 'csv', 'uploaded.csv'))
+        txt_file.save(os.path.join(data_root, 'input', 'uploaded.txt'))
         request_obj.save_to_db()
         try:
             task = inference_gait_task.delay(request_obj.submitUUID)

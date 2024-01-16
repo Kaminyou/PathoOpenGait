@@ -51,6 +51,7 @@ def inference_gait_task(self, submitUUID: str):
         session.commit()
 
     except Exception as e:
+        print(e)
         request_instance = session.query(RequestModel).filter_by(
             submitUUID=submitUUID).first()
         request_instance.status = Status.ERROR

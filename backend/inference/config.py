@@ -1,21 +1,26 @@
 import typing as t
 
 from algorithms._analyzer import Analyzer
-from algorithms.gait_basic.main import BasicGaitAnalyzer
+from algorithms.gait_basic.main import BasicGaitAnalyzer, SVOGaitAnalyzer
 
-GAIT_PRECOMPUTED_CSV_AND_MP4_MODELS = {
-    'gait_basic::v1': BasicGaitAnalyzer,
-    'gait_basic::v2': BasicGaitAnalyzer,
-}
+# GAIT_PRECOMPUTED_CSV_AND_MP4_MODELS = {
+#     'gait_basic::v1': BasicGaitAnalyzer,
+#     'gait_basic::v2': BasicGaitAnalyzer,
+# }
+
+# GAIT_PRECOMPUTED_CSV_AND_MP4_MODELS_SIMPLE = {
+#     'gait_basic::v3': BasicGaitAnalyzer,
+#     'gait_basic::v4': BasicGaitAnalyzer,
+# }
 
 GAIT_PRECOMPUTED_CSV_AND_MP4_MODELS_SIMPLE = {
-    'gait_basic::v3': BasicGaitAnalyzer,
-    'gait_basic::v4': BasicGaitAnalyzer,
+    'gait_svo::v1': SVOGaitAnalyzer,
 }
 
 MAPPING = {
-    'gait_precomputed_csv_and_mp4': GAIT_PRECOMPUTED_CSV_AND_MP4_MODELS,
-    'gait_precomputed_csv_and_mp4_simple': GAIT_PRECOMPUTED_CSV_AND_MP4_MODELS_SIMPLE,
+    'gait_svo_and_txt': GAIT_PRECOMPUTED_CSV_AND_MP4_MODELS_SIMPLE,
+    # 'gait_precomputed_csv_and_mp4': GAIT_PRECOMPUTED_CSV_AND_MP4_MODELS,
+    # 'gait_precomputed_csv_and_mp4_simple': GAIT_PRECOMPUTED_CSV_AND_MP4_MODELS_SIMPLE,
 }
 
 
