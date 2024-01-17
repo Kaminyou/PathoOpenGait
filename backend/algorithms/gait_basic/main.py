@@ -208,6 +208,7 @@ class SVOGaitAnalyzer(Analyzer):
         meta_custom_dataset_path = os.path.join(data_root_dir, 'output', f'{file_id}-custom-dataset.npz')
         output_raw_turn_time_prediction_path = os.path.join(data_root_dir, 'output', f'{file_id}-tt.pickle')
         output_shown_mp4_path = os.path.join(data_root_dir, 'output', 'render.mp4')
+        output_detectron_mp4_path = os.path.join(data_root_dir, 'output', 'render-detectron.mp4')
         output_gait_folder = os.path.join(data_root_dir, 'output', f'{file_id}-rgait-output/')
 
         # convert to avi
@@ -243,7 +244,7 @@ class SVOGaitAnalyzer(Analyzer):
                 f'./build/examples/openpose/openpose.bin '
                 f'--video {meta_avi_path} --write-video {meta_keypoints_avi_path} '
                 f'--write-json {meta_json_path} --frame_rotate 270 --camera_resolution 1920x1080 '
-                f'--tracking 0 --number_people_max 1 --display 0'
+                f'--display 0'
             ),
             volumes={
                 MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
@@ -390,12 +391,21 @@ class SVOGaitAnalyzer(Analyzer):
             print(e)
 
         try:
+            # (openpose + box) + turning; (openpose + box) is on video_path
             new_render(
-                # video_path=source_mp4_path,
                 video_path=meta_rendered_mp4_path,
-                keypoint_path=output_2dkeypoint_path,
+                detectron_custom_dataset_path=meta_custom_dataset_path,
                 tt_pickle_path=output_raw_turn_time_prediction_path,
                 output_video_path=output_shown_mp4_path,
+                draw_keypoint=False
+            )
+            # detectron + turing; draw detectron by meta_custom_dataset_path
+            new_render(
+                video_path=source_mp4_path,
+                detectron_custom_dataset_path=meta_custom_dataset_path,
+                tt_pickle_path=output_raw_turn_time_prediction_path,
+                output_video_path=output_detectron_mp4_path,
+                draw_keypoint=True,
             )
         except Exception as e:
             print('render vidso error:', e)
