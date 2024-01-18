@@ -364,7 +364,7 @@ def get_video():
         #     return {"msg": "Wrong account or password"}, HTTPStatus.FORBIDDEN
         
         video_uuid = request.args.get('id')
-        video_path = f'data/{video_uuid}/output/render.mp4'
+        video_path = f'data/{video_uuid}/out/render.mp4'
 
         if os.path.exists(video_path):
             return send_file(video_path), HTTPStatus.OK

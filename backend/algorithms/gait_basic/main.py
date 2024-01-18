@@ -24,6 +24,10 @@ def avg(l, r, nl, nr):
 
 def replace_in_filenames(path, old_string, new_string):
     for root, dirs, files in os.walk(path):
+        for _dir in dirs:
+            if old_string in _dir:
+                new_dir = _dir.replace(old_string, new_string)
+                os.rename(os.path.join(root, _dir), os.path.join(root, new_dir))
         for file in files:
             if old_string in file:
                 new_file = file.replace(old_string, new_string)
@@ -174,42 +178,42 @@ class SVOGaitAnalyzer(Analyzer):
         file_id,  # '2021-04-01-1-4'
     ) -> t.List[t.Dict[str, t.Any]]:
 
-        os.makedirs(os.path.join(data_root_dir, 'output'), exist_ok=True)
-        os.makedirs(os.path.join(data_root_dir, 'output', '2d'), exist_ok=True)
-        os.makedirs(os.path.join(data_root_dir, 'output', '3d'), exist_ok=True)
+        os.makedirs(os.path.join(data_root_dir, 'out'), exist_ok=True)
+        os.makedirs(os.path.join(data_root_dir, 'out', '2d'), exist_ok=True)
+        os.makedirs(os.path.join(data_root_dir, 'out', '3d'), exist_ok=True)
 
         # input
         source_svo_path = os.path.join(data_root_dir, 'input', f'{file_id}.svo')
         source_txt_path = os.path.join(data_root_dir, 'input', f'{file_id}.txt')
 
         # meta output
-        meta_avi_path = os.path.join(data_root_dir, 'output', f'{file_id}.avi')
-        meta_mp4_path = os.path.join(data_root_dir, 'output', f'{file_id}.mp4')
-        meta_keypoints_avi_path = os.path.join(data_root_dir, 'output', f'{file_id}-keypoints.avi')
-        meta_json_path = os.path.join(data_root_dir, 'output', f'{file_id}-json/')
-        meta_csv_path = os.path.join(data_root_dir, 'output', f'{file_id}.csv')
+        meta_avi_path = os.path.join(data_root_dir, 'out', f'{file_id}.avi')
+        meta_mp4_path = os.path.join(data_root_dir, 'out', f'{file_id}.mp4')
+        meta_keypoints_avi_path = os.path.join(data_root_dir, 'out', f'{file_id}-keypoints.avi')
+        meta_json_path = os.path.join(data_root_dir, 'out', f'{file_id}-json/')
+        meta_csv_path = os.path.join(data_root_dir, 'out', f'{file_id}.csv')
 
         # meta output (for non-target person removing)
-        meta_mot_path = os.path.join(data_root_dir, 'output', f'{file_id}.mot.txt')
-        meta_backup_json_path = os.path.join(data_root_dir, 'output', f'{file_id}-json_backup/')
-        meta_rendered_mp4_path = os.path.join(data_root_dir, 'output', f'{file_id}-rendered.mp4')
-        meta_targeted_person_bboxes_path = os.path.join(data_root_dir, 'output', f'{file_id}-target_person_bboxes.pickle')
+        meta_mot_path = os.path.join(data_root_dir, 'out', f'{file_id}.mot.txt')
+        meta_backup_json_path = os.path.join(data_root_dir, 'out', f'{file_id}-json_backup/')
+        meta_rendered_mp4_path = os.path.join(data_root_dir, 'out', f'{file_id}-rendered.mp4')
+        meta_targeted_person_bboxes_path = os.path.join(data_root_dir, 'out', f'{file_id}-target_person_bboxes.pickle')
 
         # output
         # source_csv = os.path.join(data_root_dir, 'csv', f'{file_id}.csv')
         os.makedirs(os.path.join(data_root_dir, 'video'), exist_ok=True)
         source_mp4_folder = os.path.join(data_root_dir, 'video')
         source_mp4_path = os.path.join(data_root_dir, 'video', f'{file_id}.mp4')
-        output_csv = os.path.join(data_root_dir, 'output', f'{file_id}.csv')
-        output_2dkeypoint_folder = os.path.join(data_root_dir, 'output', '2d')
-        output_2dkeypoint_path = os.path.join(data_root_dir, 'output', '2d', f'{file_id}.mp4.npz')
-        output_3dkeypoint_folder = os.path.join(data_root_dir, 'output', '3d')
-        output_3dkeypoint_path = os.path.join(data_root_dir, 'output', '3d', f'{file_id}.mp4.npy')
-        meta_custom_dataset_path = os.path.join(data_root_dir, 'output', f'{file_id}-custom-dataset.npz')
-        output_raw_turn_time_prediction_path = os.path.join(data_root_dir, 'output', f'{file_id}-tt.pickle')
-        output_shown_mp4_path = os.path.join(data_root_dir, 'output', 'render.mp4')
-        output_detectron_mp4_path = os.path.join(data_root_dir, 'output', 'render-detectron.mp4')
-        output_gait_folder = os.path.join(data_root_dir, 'output', f'{file_id}-rgait-output/')
+        output_csv = os.path.join(data_root_dir, 'out', f'{file_id}.csv')
+        output_2dkeypoint_folder = os.path.join(data_root_dir, 'out', '2d')
+        output_2dkeypoint_path = os.path.join(data_root_dir, 'out', '2d', f'{file_id}.mp4.npz')
+        output_3dkeypoint_folder = os.path.join(data_root_dir, 'out', '3d')
+        output_3dkeypoint_path = os.path.join(data_root_dir, 'out', '3d', f'{file_id}.mp4.npy')
+        meta_custom_dataset_path = os.path.join(data_root_dir, 'out', f'{file_id}-custom-dataset.npz')
+        output_raw_turn_time_prediction_path = os.path.join(data_root_dir, 'out', f'{file_id}-tt.pickle')
+        output_shown_mp4_path = os.path.join(data_root_dir, 'out', 'render.mp4')
+        output_detectron_mp4_path = os.path.join(data_root_dir, 'out', 'render-detectron.mp4')
+        output_gait_folder = os.path.join(data_root_dir, 'out', f'{file_id}-rgait-output/')
 
         # convert to avi
         run_container(
@@ -327,19 +331,20 @@ class SVOGaitAnalyzer(Analyzer):
         # old pipeline
         shutil.copyfile(meta_mp4_path, source_mp4_path)
 
-        if os.path.exists('algorithms/gait_basic/zGait/input/2001-01-01-1/2001-01-01-1-1.csv'):
-            os.remove('algorithms/gait_basic/zGait/input/2001-01-01-1/2001-01-01-1-1.csv')
-        if os.path.exists('algorithms/gait_basic/zGait/output/2001-01-01-1/'):
-            shutil.rmtree('algorithms/gait_basic/zGait/output/2001-01-01-1/')
+        # if os.path.exists('algorithms/gait_basic/zGait/input/2001-01-01-1/2001-01-01-1-1.csv'):
+        #     os.remove('algorithms/gait_basic/zGait/input/2001-01-01-1/2001-01-01-1-1.csv')
+        # if os.path.exists('algorithms/gait_basic/zGait/out/2001-01-01-1/'):
+        #     shutil.rmtree('algorithms/gait_basic/zGait/out/2001-01-01-1/')
 
         try:
-            shutil.copyfile(meta_csv_path, 'algorithms/gait_basic/zGait/input/2001-01-01-1/2001-01-01-1-1.csv')
-            os.system('cd algorithms/gait_basic/zGait && Rscript gait_batch.R input/20010101.csv')
-            shutil.copytree('algorithms/gait_basic/zGait/output/2001-01-01-1/', output_gait_folder)
-            replace_in_filenames(output_gait_folder, '2001-01-01-1', file_id)
-            shutil.copyfile('algorithms/gait_basic/zGait/output/2001-01-01-1/2001-01-01-1.csv', output_csv)
-        except:
-            print('No 3D csv')
+            gait_folder_path = os.path.join(data_root_dir, 'out', 'zGait')
+            shutil.copytree('algorithms/gait_basic/zGait/', gait_folder_path)
+            shutil.copyfile(meta_csv_path, os.path.join(gait_folder_path, 'input', '2001-01-01-1', '2001-01-01-1-1.csv'))
+            os.system(f'cd {gait_folder_path} && Rscript gait_batch.R input/20010101.csv')
+            shutil.copyfile(os.path.join(gait_folder_path, 'output/2001-01-01-1/2001-01-01-1.csv'), output_csv)
+            replace_in_filenames(gait_folder_path, '2001-01-01-1', file_id)
+        except Exception as e:
+            print(e, 'No 3D csv')
 
         os.system(
             'cd algorithms/gait_basic/VideoPose3D && python3 quick_run.py '
@@ -389,7 +394,6 @@ class SVOGaitAnalyzer(Analyzer):
             #print(sl, sw, st, cadence, velocity, tt)
         except Exception as e:
             print(e)
-
         try:
             # (openpose + box) + turning; (openpose + box) is on video_path
             new_render(
@@ -409,7 +413,6 @@ class SVOGaitAnalyzer(Analyzer):
             )
         except Exception as e:
             print('render vidso error:', e)
-
         return [
             {
                 'key': 'stride length',
