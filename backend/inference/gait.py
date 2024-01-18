@@ -13,6 +13,7 @@ def inference_gait(
     modelName,
     submitUUID,
     session,
+    trial_id,
 ):
     try:
         analyzer = data_and_model_map_to_class(data_type=dataType, model_name=modelName)()
@@ -21,7 +22,7 @@ def inference_gait(
     # analyzer = BasicGaitAnalyzer()
     results = analyzer.run(
         data_root_dir=os.path.join('/root/backend/data/', submitUUID),
-        file_id='uploaded'
+        file_id=trial_id,
     )
     # print(results)
 

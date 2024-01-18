@@ -34,7 +34,7 @@ function UploadRecords({ token }) {
 
   const TopHeader = (
     <TableRow>
-      <TableCell align="left" colSpan={3}>
+      <TableCell align="left" colSpan={4}>
         <b>Request information</b>
       </TableCell>
       <TableCell align="left" colSpan={1}>
@@ -48,10 +48,17 @@ function UploadRecords({ token }) {
       id: 'dateUpload',
       label: 'Upload Date',
       minWidth: 100, 
-      color: '#131313',},
+      color: '#131313',
+    },
     { 
       id: 'date',
-      label: 'Experiment Date',
+      label: 'Trial Date',
+      minWidth: 100, 
+      color: '#131313',
+    },
+    { 
+      id: 'trialID',
+      label: 'Trial ID',
       minWidth: 100, 
       color: '#131313',
     },

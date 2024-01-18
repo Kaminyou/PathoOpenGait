@@ -18,6 +18,7 @@ REQUEST_STATUS_KEY = {
     'dateUpload': lambda x: x.strftime("%Y-%m-%d"),
     'date': lambda x: x.strftime("%Y-%m-%d"),
     'description': str,
+    'trialID': str,
     'status': lambda x: x.name,
 }
 

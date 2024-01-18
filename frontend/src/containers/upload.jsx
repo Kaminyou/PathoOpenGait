@@ -26,6 +26,7 @@ function UploadPage({ token }) {
 
   const [date, setDate] = useState('');
   const [description, setDescription] = useState('');
+  const [trialID, setTrialID] = useState('');
 
   const fetchModelAndData = async () => {
     try {
@@ -115,6 +116,10 @@ function UploadPage({ token }) {
     setDescription(event.target.value);
   };
 
+  const handleTrialIDChange = (event) => {
+    setTrialID(event.target.value);
+  }
+
   const formatBytes = (bytes, decimals = 2) => {
     if (bytes === 0) return '0 Bytes';
 
@@ -130,6 +135,7 @@ function UploadPage({ token }) {
   const resetForm = () => {
     setLoading(false);
     setDescription('');
+    setTrialID('');
     setSVOFile(null);
     setTXTFile(null);
     setUploadProgress(0);
@@ -147,6 +153,52 @@ function UploadPage({ token }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (date === '') {
+      swal({
+        title: "Error",
+        text: "Trial Date is required",
+        icon: "error",
+      });
+      return
+    }
+
+    if (trialID === '') {
+      swal({
+        title: "Error",
+        text: "Trial ID is required",
+        icon: "error",
+      });
+      return
+    }
+
+    if (trialID.indexOf(' ') >= 0) {
+      swal({
+        title: "Error",
+        text: "Trial ID cannot contain a space",
+        icon: "error",
+      });
+      return
+    }
+
+    if (svoFile === null) {
+      swal({
+        title: "Error",
+        text: "Please select a svo file to upload",
+        icon: "error",
+      });
+      return
+    }
+
+    if (txtFile === null) {
+      swal({
+        title: "Error",
+        text: "Please select a txt file (svo timestamp) to upload",
+        icon: "error",
+      });
+      return
+    }
+
     const formData = new FormData();
     formData.append('svoFile', svoFile);
     formData.append('txtFile', txtFile);
@@ -154,6 +206,7 @@ function UploadPage({ token }) {
     formData.append('modelName', modelName);
     formData.append('date', date);
     formData.append('description', description);
+    formData.append('trialID', trialID);
 
     const headers = {
       Authorization: 'Bearer ' + token
@@ -208,14 +261,28 @@ function UploadPage({ token }) {
             <div className="about-text">
               <form onSubmit={handleSubmit} className="form-horizontal">
                 <div className="form-group">
-                  <label className="col-sm-1 control-label">Date</label>
+                  <label className="col-sm-1 control-label">Trial Date</label>
                   <div className="col-sm-10">
                     <input
                       type="text"
                       className="form-control"
-                      placeholder="Date"
+                      placeholder="Trial Date"
                       value={date}
                       onChange={handleDateChange}
+                      disabled={loading}
+                    />
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label className="col-sm-1 control-label">Unique Trial ID</label>
+                  <div className="col-sm-10">
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="YYYY-MM-DD-PATIENT_ID-TRIAL_ID (suggested. e.g., 2024-01-01-1-1)"
+                      value={trialID}
+                      onChange={handleTrialIDChange}
+                      disabled={loading}
                     />
                   </div>
                 </div>
@@ -228,6 +295,7 @@ function UploadPage({ token }) {
                       placeholder="Description"
                       value={description}
                       onChange={handleDescriptionChange}
+                      disabled={loading}
                     />
                   </div>
                 </div>
@@ -246,6 +314,7 @@ function UploadPage({ token }) {
                     modelName={modelName}
                     handleModelNameChange={handleModelNameChange}
                     availableModelName={availableModelName}
+                    disabled={loading}
                   />
                 )}
                 <div className="form-group">

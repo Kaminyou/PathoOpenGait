@@ -36,6 +36,7 @@ def inference_gait_task(self, submitUUID: str):
 
     dataType = request_instance.dataType
     modelName = request_instance.modelName
+    trialID =  request_instance.trialID
 
     try:
         inference_gait(
@@ -43,6 +44,7 @@ def inference_gait_task(self, submitUUID: str):
             modelName=modelName,
             submitUUID=submitUUID,
             session=session,
+            trial_id=trialID,
         )
 
         request_instance = session.query(RequestModel).filter_by(

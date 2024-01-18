@@ -158,6 +158,7 @@ def manager_upload_gait_csv():
 
         form_data = request_schema.load(request_form)
         form_data.update({"account": target_account})
+        trial_id = form_data['trialID']
         request_obj = RequestModel(**form_data)
 
         submit_uuid = request_obj.submitUUID
@@ -169,11 +170,13 @@ def manager_upload_gait_csv():
         os.makedirs(data_root)
         os.makedirs(os.path.join(data_root, 'input'))
         try:
-            svo_file.save(os.path.join(data_root, 'input', 'uploaded.svo'))
-        except Exception:
-            current_app.logger.info(f'{account} submit with no 3D csv')
-        # csv_file.save(os.path.join(data_root, 'csv', 'uploaded.csv'))
-        txt_file.save(os.path.join(data_root, 'input', 'uploaded.txt'))
+            svo_file.save(os.path.join(data_root, 'input', f'{trial_id}.svo'))
+        except Exception as e:
+            current_app.logger.info(f'{account} submit svo file fail due to {e}')
+        try:
+            txt_file.save(os.path.join(data_root, 'input', f'{trial_id}.txt'))
+        except Exception as e:
+            current_app.logger.info(f'{account} submit txt file fail due to {e}')
         request_obj.save_to_db()
         try:
             task = inference_gait_task.delay(request_obj.submitUUID)
@@ -222,6 +225,7 @@ def manager_request_results():
             sub_results = {}
             sub_results['dateUpload'] = request_object.__dict__['dateUpload'].strftime("%Y-%m-%d")
             sub_results['date'] = request_object.__dict__['date'].strftime("%Y-%m-%d")
+            sub_results['trialID'] = request_object.__dict__['trialID']
             request_uuid = request_object.__dict__['submitUUID']
             sub_results['detail'] = request_uuid
             result_objects = ResultModel.find_by_requestUUID(requestUUID=request_uuid)

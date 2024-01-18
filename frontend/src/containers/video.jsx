@@ -25,7 +25,7 @@ function VideoPage({ token }) {
 
   const [result, setResult] = useState({});
 
-  const infoKeyOrder = ['experiment date', 'upload date'];
+  const infoKeyOrder = ['experiment date', 'upload date', 'trial ID'];
   const keyOrder = ['stride length', 'stride width', 'stride time', 'velocity', 'cadence', 'turn time'];
 
   const fetchResult = async () => {
