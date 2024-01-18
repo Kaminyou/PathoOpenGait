@@ -387,7 +387,6 @@ class SVOGaitAnalyzer(Analyzer):
             cadence = table['cadence']
             velocity = table['velocity']
 
-
             sl = avg(left_sl, right_sl, left_n, right_n)
             sw = avg(left_sw, right_sw, left_n, right_n)
             st = avg(left_st, right_st, left_n, right_n)
@@ -396,13 +395,17 @@ class SVOGaitAnalyzer(Analyzer):
             print(e)
         try:
             # (openpose + box) + turning; (openpose + box) is on video_path
+            output_shown_mp4_path_temp = output_shown_mp4_path + '.tmp.mp4'
             new_render(
                 video_path=meta_rendered_mp4_path,
                 detectron_custom_dataset_path=meta_custom_dataset_path,
                 tt_pickle_path=output_raw_turn_time_prediction_path,
-                output_video_path=output_shown_mp4_path,
+                output_video_path=output_shown_mp4_path_temp,
                 draw_keypoint=False
             )
+            # browser mp4v encoding issue -> convert to h264
+            os.system(f'ffmpeg -y -i {output_shown_mp4_path_temp} -movflags +faststart -vcodec libx264 -f mp4 {output_shown_mp4_path}')
+            os.system(f'rm {output_shown_mp4_path_temp}')
             # detectron + turing; draw detectron by meta_custom_dataset_path
             new_render(
                 video_path=source_mp4_path,
@@ -413,6 +416,7 @@ class SVOGaitAnalyzer(Analyzer):
             )
         except Exception as e:
             print('render vidso error:', e)
+
         return [
             {
                 'key': 'stride length',
