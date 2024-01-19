@@ -1,7 +1,3 @@
-import time
-from datetime import datetime
-
-
 PERSON_PROFILE_KEY = {
     'name': str,
     'gender': str,
@@ -23,7 +19,6 @@ REQUEST_STATUS_KEY = {
 }
 
 
-
 def parse_personal_profile(
     profile_instance,
 ):
@@ -37,7 +32,7 @@ def parse_personal_profile(
                     transform = PERSON_PROFILE_KEY[k]
                     v = transform(v)
                 response[k] = v
-        except:
+        except Exception:
             pass
     return response
 
@@ -55,7 +50,7 @@ def parse_request_instance(
                     transform = REQUEST_STATUS_KEY[k]
                     v = transform(v)
                 response[k] = v
-        except:
+        except Exception:
             pass
     return response
 
@@ -80,12 +75,14 @@ def parse_user_instance(user_instance):
     response['category'] = user_instance.__dict__['category'].name
     return response
 
+
 def parse_subordinate_instances(subordinate_instances):
     response = []
     for subordinate_instance in subordinate_instances:
         if subordinate_instance.__dict__['exist']:
             response.append(parse_subordinate_instance(subordinate_instance))
     return response
+
 
 def parse_subordinate_instance(subordinate_instance):
     response = {}
