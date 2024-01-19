@@ -1,4 +1,17 @@
 # Changelog
+## v0.2.0
+### Improvement
+- Enable raw svo and txt uploading
+- Add algorithms to remove any non-targeted person
+- Make Rscript execution independent between jobs (not computing in the source code folder)
+- Make 3D estimation execution independent between jobs (not computing in the source code folder)
+
+### New features
+- Examine each field in frontend during uploading
+- Block any modification in each field during uploading
+- Enable providing a unique trial ID
+- Show uploading progress
+
 ## v0.1.1
 ### New features
 - Provide instruction for 3D trajetories conversion

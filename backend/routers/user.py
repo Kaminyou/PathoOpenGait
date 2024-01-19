@@ -43,9 +43,60 @@ def get_user_category() -> dict:
         )
 
 
+# @user_api.route('/upload/gait', methods=['POST'])
+# @jwt_required()
+# def upload_gait_csv():
+#     try:
+#         account = get_jwt_identity()
+#         user_instance = UserModel.find_by_account(account=account)
+
+#         if user_instance is None:
+#             return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
+
+#         form_data = requestSchema.load(request.form)
+#         form_data.update({"account": account})
+#         request_obj = RequestModel(**form_data)
+
+#         submit_uuid = request_obj.submitUUID
+
+#         csv_file = request.files['csvFile']
+#         mp4_file = request.files['mp4File']
+
+#         data_root = f'data/{submit_uuid}'
+#         os.makedirs(data_root)
+#         os.makedirs(os.path.join(data_root, 'csv'))
+#         os.makedirs(os.path.join(data_root, 'video'))
+#         try:
+#             csv_file.save(os.path.join(data_root, 'csv', 'uploaded.csv'))
+#         except Exception:
+#             current_app.logger.info(f'{account} submit with no 3D csv')
+#         # csv_file.save(os.path.join(data_root, 'csv', 'uploaded.csv'))
+#         mp4_file.save(os.path.join(data_root, 'video', 'uploaded.mp4'))
+#         request_obj.save_to_db()
+#         try:
+#             task = inference_gait_task.delay(request_obj.submitUUID)
+#             return (
+#                 {
+#                     'msg': 'File uploaded successfully',
+#                     'task_id': task.id,
+#                 },
+#                 HTTPStatus.OK,
+#             )
+
+#         except Exception:
+#             request_obj.delete_from_db()  # Rollback
+#             return {'msg': 'Internal Server Error!'}, HTTPStatus.INTERNAL_SERVER_ERROR
+
+#     except Exception as e:
+#         current_app.logger.info(f'{account} trigger exception {e}')
+#         return (
+#             {'msg': 'Error'},
+#             HTTPStatus.FORBIDDEN,
+#         )
+
 @user_api.route('/upload/gait', methods=['POST'])
 @jwt_required()
-def upload_gait_csv():
+def upload_gait_svo():
     try:
         account = get_jwt_identity()
         user_instance = UserModel.find_by_account(account=account)
@@ -55,23 +106,25 @@ def upload_gait_csv():
 
         form_data = requestSchema.load(request.form)
         form_data.update({"account": account})
+        trial_id = form_data['trialID']
         request_obj = RequestModel(**form_data)
 
         submit_uuid = request_obj.submitUUID
 
-        csv_file = request.files['csvFile']
-        mp4_file = request.files['mp4File']
+        svo_file = request.files['svoFile']
+        txt_file = request.files['txtFile']
 
         data_root = f'data/{submit_uuid}'
         os.makedirs(data_root)
-        os.makedirs(os.path.join(data_root, 'csv'))
-        os.makedirs(os.path.join(data_root, 'video'))
+        os.makedirs(os.path.join(data_root, 'input'))
         try:
-            csv_file.save(os.path.join(data_root, 'csv', 'uploaded.csv'))
-        except Exception:
-            current_app.logger.info(f'{account} submit with no 3D csv')
-        # csv_file.save(os.path.join(data_root, 'csv', 'uploaded.csv'))
-        mp4_file.save(os.path.join(data_root, 'video', 'uploaded.mp4'))
+            svo_file.save(os.path.join(data_root, 'input', f'{trial_id}.svo'))
+        except Exception as e:
+            current_app.logger.info(f'{account} submit svo file fail due to {e}')
+        try:
+            txt_file.save(os.path.join(data_root, 'input', f'{trial_id}.txt'))
+        except Exception as e:
+            current_app.logger.info(f'{account} submit txt file fail due to {e}')
         request_obj.save_to_db()
         try:
             task = inference_gait_task.delay(request_obj.submitUUID)
@@ -142,6 +195,7 @@ def request_results():
             sub_results = {}
             sub_results['dateUpload'] = request_object.__dict__['dateUpload'].strftime("%Y-%m-%d")
             sub_results['date'] = request_object.__dict__['date'].strftime("%Y-%m-%d")
+            sub_results['trialID'] = request_object.__dict__['trialID']
             request_uuid = request_object.__dict__['submitUUID']
             sub_results['detail'] = request_uuid
             result_objects = ResultModel.find_by_requestUUID(requestUUID=request_uuid)
@@ -187,6 +241,7 @@ def request_result():
         sub_results = {}
         sub_results['upload date'] = request_object.__dict__['dateUpload'].strftime("%Y-%m-%d")
         sub_results['experiment date'] = request_object.__dict__['date'].strftime("%Y-%m-%d")
+        sub_results['trial ID'] = request_object.__dict__['trialID']
         result_objects = ResultModel.find_by_requestUUID(requestUUID=submit_uuid)
         for result_object in result_objects:
             k = result_object.__dict__['resultKey']
@@ -205,7 +260,7 @@ def request_result():
         )
 
     except Exception as e:
-        current_app.logger.info(f'{account} trigger exception {e}')
+        current_app.logger.info(f'trigger exception {e}')
         return (
             {'msg': 'Error'},
             HTTPStatus.FORBIDDEN,
@@ -314,7 +369,7 @@ def get_video():
         #     return {"msg": "Wrong account or password"}, HTTPStatus.FORBIDDEN
         
         video_uuid = request.args.get('id')
-        video_path = f'data/{video_uuid}/output/render.mp4'
+        video_path = f'data/{video_uuid}/out/render.mp4'
 
         if os.path.exists(video_path):
             return send_file(video_path), HTTPStatus.OK

@@ -46,7 +46,7 @@ function SimpleDashboard({ results, token }) {
 
   const TopHeader = (
     <TableRow>
-      <TableCell align="left" colSpan={2}>
+      <TableCell align="left" colSpan={3}>
         <b>Request information</b>
       </TableCell>
       <TableCell align="left" colSpan={6}>
@@ -65,6 +65,12 @@ function SimpleDashboard({ results, token }) {
     { 
       id: 'date',
       label: 'Experiment Date',
+      minWidth: 100, 
+      color: '#131313',
+    },
+    {
+      id: 'trialID',
+      label: 'Trial ID',
       minWidth: 100, 
       color: '#131313',
     },

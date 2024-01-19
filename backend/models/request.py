@@ -16,6 +16,7 @@ class RequestModel(db.Model):
     modelName = db.Column(db.String(100), nullable=False)
     date = db.Column(db.DateTime, default=db.func.current_timestamp())
     description = db.Column(db.String(200), nullable=False)
+    trialID = db.Column(db.String(200), nullable=False)
 
     toShow = db.Column(db.Boolean, nullable=False, default=True)
 

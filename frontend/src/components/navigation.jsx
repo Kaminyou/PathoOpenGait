@@ -24,6 +24,19 @@ function Navigation({ token }) {
     }
   }
 
+  const navbarBrandStyle = {
+    display: 'flex',
+    alignItems: 'flex-end' // Align items to the end (bottom) of the flex container
+};
+
+const versionStyle = {
+    fontSize: '0.8em', // Adjust the font size as needed
+    color: '#666', // Adjust the color as needed
+    marginLeft: '0px', // Adds space between the text and the version
+    paddingBottom: '10px' // Adjust this to align the version text at the bottom
+};
+
+
   useEffect(() => {
     getUserCategory();
   }, [token]);
@@ -44,7 +57,11 @@ function Navigation({ token }) {
             <span className="icon-bar"></span>{" "}
             <span className="icon-bar"></span>{" "}
           </button>
-          <HashLink className="navbar-brand page-scroll" smooth to="/#header">PathoOpenGait</HashLink>
+          <div style={navbarBrandStyle}>
+            <HashLink className="navbar-brand page-scroll" smooth to="/#header">PathoOpenGait</HashLink>
+            <span style={versionStyle}>v0.2.0</span>
+        </div>
+          {/* <HashLink className="navbar-brand page-scroll" smooth to="/#header">PathoOpenGait</HashLink> */}
           {/* <a className="navbar-brand page-scroll" href="#page-top">
             PathoOpenGait
           </a>{" "} */}
