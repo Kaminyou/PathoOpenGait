@@ -7,7 +7,7 @@
 ### New features
 - Examine each field in frontend during uploading
 - Block any modification in each field during uploading
-- Enable providing an unique trial ID
+- Enable providing a unique trial ID
 - Show uploading progress
 
 ## v0.1.1
