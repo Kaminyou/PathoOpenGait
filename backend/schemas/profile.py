@@ -1,6 +1,6 @@
 from marshmallow import Schema, fields
 from marshmallow.decorators import post_load
-from marshmallow.validate import Length, Range
+from marshmallow.validate import Length
 
 from security import get_uuid
 
