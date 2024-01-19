@@ -1,21 +1,20 @@
 import os
 from http import HTTPStatus
 
-from flask import Blueprint, current_app, jsonify, request, send_file, after_this_request
-from flask_jwt_extended import (
-    get_jwt_identity, jwt_required,
-)
-
+from flask import Blueprint, after_this_request, current_app, jsonify, request, send_file
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from enums.request import Status
 from enums.user import UserCategoryEnum
 from inference.tasks import inference_gait_task
-from models import SubordinateModel, UserModel, RequestModel, ResultModel, ProfileModel
-from parsers.parser import parse_subordinate_instances, parse_personal_profile, parse_request_instances
+from models import ProfileModel, RequestModel, ResultModel, SubordinateModel, UserModel
+from parsers.parser import (
+    parse_personal_profile, parse_request_instances, parse_subordinate_instances,
+)
+from schemas.request import RequestSchema
 from schemas.subordinate import SubordinateSchema
 from schemas.user import UserSchema
-from schemas.request import RequestSchema
-from security import get_sha256, generate_random_string
+from security import generate_random_string, get_sha256
 
 
 manager_api = Blueprint('manager', __name__)
@@ -198,7 +197,7 @@ def manager_upload_gait_csv():
             {'msg': 'Error'},
             HTTPStatus.FORBIDDEN,
         )
-    
+
 
 @manager_api.route('/request/results', methods=['POST'])
 @jwt_required()
@@ -209,10 +208,10 @@ def manager_request_results():
 
         if user_instance is None:
             return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
-        
+
         if user_instance.__dict__['category'] != UserCategoryEnum.manager:
             return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
-    
+
         target_account = request.form['account']
         if SubordinateModel.find_by_account_and_subordinate(account=account, subordinate=target_account) is None:
             return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
@@ -237,7 +236,7 @@ def manager_request_results():
                     v = round(float(v), 2)
                 sub_results[k] = v
             results.append(sub_results)
-        
+
         return (
             {
                 'msg': 'success',
@@ -266,7 +265,7 @@ def manager_request_status():
 
         if user_instance.__dict__['category'] != UserCategoryEnum.manager:
             return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
-        
+
         request_objects = []
         subordinate_instances = SubordinateModel.find_by_account(account=account)
         for subordinate_instance in subordinate_instances:
@@ -274,7 +273,7 @@ def manager_request_status():
                 target_account = subordinate_instance.__dict__['subordinate']
                 request_objects += RequestModel.find_by_account(account=target_account)
         request_status_data = parse_request_instances(request_objects)
-        
+
         return (
             {
                 'msg': 'success',
@@ -303,16 +302,16 @@ def manager_request_report_download():
 
         if user_instance.__dict__['category'] != UserCategoryEnum.manager:
             return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
-        
+
         subordinate_instances = SubordinateModel.find_by_account(account=account)
 
         csv = ''
-        csv += 'account,name,gender,birthday,diagnose,stage,dominant_side,LDED,experiment_date,stride_length,stride_width,stride_time,velocity,cadence,turn_time\n'
+        csv += 'account,name,gender,birthday,diagnose,stage,dominant_side,LDED,experiment_date,stride_length,stride_width,stride_time,velocity,cadence,turn_time\n'  # noqa
         for subordinate_instance in subordinate_instances:
             if subordinate_instance.__dict__['exist']:
                 target_account = subordinate_instance.__dict__['subordinate']
                 profile_object = ProfileModel.find_latest_by_account(account=target_account)
-                
+
                 ss = f'{target_account},NA,NA,NA,NA,NA,NA,NA,'
                 if profile_object:
                     name = profile_object.__dict__['name']
@@ -320,14 +319,15 @@ def manager_request_report_download():
                     birthday = profile_object.__dict__['birthday'].strftime("%Y-%m-%d"),
                     try:
                         birthday = birthday[0]
-                    except:
+                    except Exception as e:
+                        current_app.logger.info(f'{account} trigger exception {e}')
                         birthday = profile_object.__dict__['birthday'].strftime("%Y-%m-%d")
                     diagnose = profile_object.__dict__['diagnose']
                     stage = profile_object.__dict__['stage']
                     dominantSide = profile_object.__dict__['dominantSide']
                     lded = profile_object.__dict__['lded']
                     ss = f'{target_account},{name},{gender},{birthday},{diagnose},{stage},{dominantSide},{lded},'
-                
+
                 orders = [
                     'stride length',
                     'stride width',
@@ -358,7 +358,7 @@ def manager_request_report_download():
                         sss += f',{collections[order]}'
                     sss += '\n'
                     csv += sss
-        
+
         file_name = f'{generate_random_string(10)}_report.csv'
         with open(file_name, 'w') as f:
             f.write(csv)
@@ -395,14 +395,14 @@ def manager_get_user_profile():
 
         if user_instance is None:
             return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
-        
+
         if user_instance.__dict__['category'] != UserCategoryEnum.manager:
             return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
-    
+
         target_account = request.form['account']
         if SubordinateModel.find_by_account_and_subordinate(account=account, subordinate=target_account) is None:
             return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
-        
+
         profile_object = ProfileModel.find_latest_by_account(account=target_account)
         profile = parse_personal_profile(profile_object)
         try:
@@ -411,6 +411,7 @@ def manager_get_user_profile():
         except Exception as e:
             current_app.logger.info(f'{account} trigger exception {e}')
             return {"message": "Internal Server Error!"}, HTTPStatus.INTERNAL_SERVER_ERROR
-    
-    except Exception:
+
+    except Exception as e:
+        current_app.logger.info(f'exception {e}')
         return {"msg": "Internal Server Error!"}, HTTPStatus.INTERNAL_SERVER_ERROR

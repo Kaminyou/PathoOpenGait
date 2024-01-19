@@ -160,7 +160,7 @@ def request_status():
 
         request_objects = RequestModel.find_by_account(account=account)
         request_status_data = parse_request_instances(request_objects)
-        
+
         return (
             {
                 'msg': 'success',
@@ -207,7 +207,7 @@ def request_results():
                     v = round(float(v), 2)
                 sub_results[k] = v
             results.append(sub_results)
-        
+
         return (
             {
                 'msg': 'success',
@@ -250,7 +250,7 @@ def request_result():
             if v_type == 'float':
                 v = round(float(v), 2)
             sub_results[k] = v
-        
+
         return (
             {
                 'msg': 'success',
@@ -308,7 +308,7 @@ def update_user_profile():
         profile_obj.save_to_db()
 
         return {"msg": "Success"}, HTTPStatus.OK
-    
+
     except Exception as e:
         current_app.logger.info(f'{account} trigger exception {e}')
         return {"msg": "Internal Server Error!"}, HTTPStatus.INTERNAL_SERVER_ERROR
@@ -321,7 +321,7 @@ def get_user_profile():
         account = get_jwt_identity()
         if not UserModel.find_by_account(account=account):
             return {"msg": "Wrong account or password"}, 401
-        
+
         profile_object = ProfileModel.find_latest_by_account(account=account)
         profile = parse_personal_profile(profile_object)
         try:
@@ -330,10 +330,10 @@ def get_user_profile():
         except Exception as e:
             current_app.logger.info(f'{account} trigger exception {e}')
             return {"message": "Internal Server Error!"}, HTTPStatus.INTERNAL_SERVER_ERROR
-    
+
     except Exception:
         return {"msg": "Internal Server Error!"}, HTTPStatus.INTERNAL_SERVER_ERROR
-    
+
 
 @user_api.route('/profile/personal/uuid', methods=['GET'])
 # @jwt_required()
@@ -346,28 +346,28 @@ def get_user_profile_with_uuid():
         submit_uuid = request.args.get('id')
         request_object = RequestModel.find_by_submitID(submitUUID=submit_uuid)
         target_account = request_object.__dict__['account']
-        
+
         profile_object = ProfileModel.find_latest_by_account(account=target_account)
         profile = parse_personal_profile(profile_object)
         try:
             return jsonify({"msg": "Submit successfully!", "profile": profile}), HTTPStatus.OK
 
         except Exception as e:
-            current_app.logger.info(f'{account} trigger exception {e}')
+            current_app.logger.info(f'exception {e}')
             return {"message": "Internal Server Error!"}, HTTPStatus.INTERNAL_SERVER_ERROR
-    
+
     except Exception:
         return {"msg": "Internal Server Error!"}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 @user_api.route('/video', methods=['GET'])
-#@jwt_required()
+# @jwt_required()
 def get_video():
     try:
         # account = get_jwt_identity()
         # if not UserModel.find_by_account(account=account):
         #     return {"msg": "Wrong account or password"}, HTTPStatus.FORBIDDEN
-        
+
         video_uuid = request.args.get('id')
         video_path = f'data/{video_uuid}/out/render.mp4'
 

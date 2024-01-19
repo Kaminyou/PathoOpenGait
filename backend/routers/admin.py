@@ -1,9 +1,7 @@
 from http import HTTPStatus
 
 from flask import Blueprint, current_app, request
-from flask_jwt_extended import (
-    get_jwt_identity, jwt_required
-)
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from enums.user import UserCategoryEnum
 from models import UserModel
@@ -33,7 +31,7 @@ def list_current_users():
 
         if user_instance is None:
             return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
-        
+
         if user_instance.__dict__['category'] != UserCategoryEnum.admin:
             return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
 
@@ -57,14 +55,14 @@ def create_user():
 
         if user_instance is None:
             return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
-        
+
         if user_instance.__dict__['category'] != UserCategoryEnum.admin:
             return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
 
         new_user_account = request.form["account"]
         if UserModel.find_by_account(account=new_user_account) is not None:
             return {"msg": "Duplicated account"}, HTTPStatus.FORBIDDEN
-        
+
         formData = user_schema.load(request.form)
         userObj = UserModel(**formData)
         try:
@@ -93,7 +91,7 @@ def change_user_password():
 
         if user_instance is None:
             return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
-        
+
         if user_instance.__dict__['category'] != UserCategoryEnum.admin:
             return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
 

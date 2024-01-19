@@ -3,8 +3,8 @@ from http import HTTPStatus
 from flask import Blueprint, current_app, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
-from models import UserModel
 from inference.config import get_data_types, get_model_names
+from models import UserModel
 
 
 info_api = Blueprint('info', __name__)
@@ -31,7 +31,7 @@ def get_data_type_list() -> dict:
             {'datatypes': []},
             HTTPStatus.OK,
         )
-    
+
 
 @info_api.route('/list/modelnames', methods=['GET'])
 @jwt_required()
