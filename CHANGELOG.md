@@ -3,6 +3,8 @@
 ### Improvement
 - Enable raw svo and txt uploading
 - Add algorithms to remove any non-targeted person
+- Make Rscript execution independent between jobs (not computing in the source code folder)
+- Make 3D estimation execution independent between jobs (not computing in the source code folder)
 
 ### New features
 - Examine each field in frontend during uploading
