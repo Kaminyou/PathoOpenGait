@@ -1,3 +1,4 @@
+![linting workflow](https://github.com/Kaminyou/PathoOpenGait/actions/workflows/main.yml/badge.svg)
 # PathoOpenGait
 ![image](./misc/pathoopengait-teaser.png)
 
