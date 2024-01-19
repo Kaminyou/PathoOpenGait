@@ -191,7 +191,7 @@ class SVOGaitAnalyzer(Analyzer):
         meta_mp4_path = os.path.join(data_root_dir, 'out', f'{file_id}.mp4')
         meta_keypoints_avi_path = os.path.join(data_root_dir, 'out', f'{file_id}-keypoints.avi')
         meta_json_path = os.path.join(data_root_dir, 'out', f'{file_id}-json/')
-        meta_csv_path = os.path.join(data_root_dir, 'out', f'{file_id}.csv')
+        meta_csv_path = os.path.join(data_root_dir, 'out', f'{file_id}-raw.csv')
 
         # meta output (for non-target person removing)
         meta_mot_path = os.path.join(data_root_dir, 'out', f'{file_id}.mot.txt')
@@ -406,6 +406,7 @@ class SVOGaitAnalyzer(Analyzer):
             # browser mp4v encoding issue -> convert to h264
             os.system(f'ffmpeg -y -i {output_shown_mp4_path_temp} -movflags +faststart -vcodec libx264 -f mp4 {output_shown_mp4_path}')
             os.system(f'rm {output_shown_mp4_path_temp}')
+
             # detectron + turing; draw detectron by meta_custom_dataset_path
             new_render(
                 video_path=source_mp4_path,
