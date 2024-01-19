@@ -118,7 +118,10 @@ def change_subordinate_password():
 
         user_account = request.form["account"]
         new_password = request.form["password"]
-        if SubordinateModel.find_by_account_and_subordinate(account=account, subordinate=user_account) is None:
+        if SubordinateModel.find_by_account_and_subordinate(
+            account=account,
+            subordinate=user_account,
+        ) is None:
             return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
 
         if UserModel.find_by_account(account=user_account) is None:
@@ -152,7 +155,10 @@ def manager_upload_gait_csv():
         request_form = request.form.to_dict()
         target_account = request_form['account']  # should be subordinate
         request_form.pop('account', None)
-        if SubordinateModel.find_by_account_and_subordinate(account=account, subordinate=target_account) is None:
+        if SubordinateModel.find_by_account_and_subordinate(
+            account=account,
+            subordinate=target_account,
+        ) is None:
             return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
 
         form_data = request_schema.load(request_form)
@@ -213,7 +219,10 @@ def manager_request_results():
             return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
 
         target_account = request.form['account']
-        if SubordinateModel.find_by_account_and_subordinate(account=account, subordinate=target_account) is None:
+        if SubordinateModel.find_by_account_and_subordinate(
+            account=account,
+            subordinate=target_account,
+        ) is None:
             return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
 
         request_objects = RequestModel.find_by_account_and_sort_by_exp_date(account=target_account)
@@ -326,7 +335,7 @@ def manager_request_report_download():
                     stage = profile_object.__dict__['stage']
                     dominantSide = profile_object.__dict__['dominantSide']
                     lded = profile_object.__dict__['lded']
-                    ss = f'{target_account},{name},{gender},{birthday},{diagnose},{stage},{dominantSide},{lded},'
+                    ss = f'{target_account},{name},{gender},{birthday},{diagnose},{stage},{dominantSide},{lded},'  # noqa
 
                 orders = [
                     'stride length',
@@ -340,7 +349,9 @@ def manager_request_report_download():
                 request_objects = RequestModel.find_by_account(account=target_account)
                 for request_object in request_objects:
                     sss = ss + f'{request_object.__dict__["date"].strftime("%Y-%m-%d")}'
-                    result_objects = ResultModel.find_by_requestUUID(requestUUID=request_object.__dict__["submitUUID"])
+                    result_objects = ResultModel.find_by_requestUUID(
+                        requestUUID=request_object.__dict__["submitUUID"],
+                    )
                     collections = {
                         'stride length': 0,
                         'stride width': 0,
@@ -400,7 +411,10 @@ def manager_get_user_profile():
             return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
 
         target_account = request.form['account']
-        if SubordinateModel.find_by_account_and_subordinate(account=account, subordinate=target_account) is None:
+        if SubordinateModel.find_by_account_and_subordinate(
+            account=account,
+            subordinate=target_account,
+        ) is None:
             return {'msg': 'User does not exist'}, HTTPStatus.FORBIDDEN
 
         profile_object = ProfileModel.find_latest_by_account(account=target_account)
