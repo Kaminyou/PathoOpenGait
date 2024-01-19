@@ -1,25 +1,27 @@
 import os
+import pickle
 import shutil
 import typing as t
-import pickle
 
 import docker
 import pandas as pd
 
 from .._analyzer import Analyzer
 from .gait_study_semi_turn_time.inference import simple_inference
-from .utils.make_video import render, new_render
-from .utils.track import (run_container, count_json_file, find_continuous_personal_bbox,
-                   load_mot_file, remove_non_target_person,
-                   set_zero_prob_for_keypoint_before_start_line)
+from .utils.make_video import new_render, render
+from .utils.track import (
+    count_json_file, find_continuous_personal_bbox, load_mot_file,
+    remove_non_target_person, run_container, set_zero_prob_for_keypoint_before_start_line,
+)
 
 
 MOUNT = os.environ['MOUNT']
 WORK_DIR = '/root/backend'
 START_LINE = 1820
 
-def avg(l, r, nl, nr):
-    return (l * nl + r * nr) / (nl + nr)
+
+def avg(left_value, right_value, left_num, right_num):
+    return (left_value * left_num + right_value * right_num) / (left_num + right_num)
 
 
 def replace_in_filenames(path: str, old_string: str, new_string: str) -> None:
@@ -69,9 +71,12 @@ class BasicGaitAnalyzer(Analyzer):
             shutil.copyfile(source_csv, 'algorithms/gait_basic/zGait/input/2001-01-01-1/2001-01-01-1-1.csv')
             os.system('cd algorithms/gait_basic/zGait && Rscript gait_batch.R input/20010101.csv')
             shutil.copyfile('algorithms/gait_basic/zGait/output/2001-01-01-1/2001-01-01-1.csv', output_csv)
-            shutil.copyfile('algorithms/gait_basic/zGait/output/2001-01-01-1/1_stride/2001-01-01-1-1.csv', output_stride_csv)
-        except:
-            print('No 3D csv')
+            shutil.copyfile(
+                'algorithms/gait_basic/zGait/output/2001-01-01-1/1_stride/2001-01-01-1-1.csv',
+                output_stride_csv,
+            )
+        except Exception as e:
+            print('No 3D csv', e)
 
         os.system(
             'cd algorithms/gait_basic/VideoPose3D && python3 quick_run.py '
@@ -108,15 +113,13 @@ class BasicGaitAnalyzer(Analyzer):
             right_sw = table['right.stride.wt.mu']
             left_st = table['left.stride.t.mu']
             right_st = table['right.stride.t.mu']
-            #tt = table['turn.t']
+            # tt = table['turn.t']
             cadence = table['cadence']
             velocity = table['velocity']
-
 
             sl = avg(left_sl, right_sl, left_n, right_n)
             sw = avg(left_sw, right_sw, left_n, right_n)
             st = avg(left_st, right_st, left_n, right_n)
-            #print(sl, sw, st, cadence, velocity, tt)
         except Exception as e:
             print(e)
 
@@ -206,14 +209,14 @@ class SVOGaitAnalyzer(Analyzer):
         source_mp4_path = os.path.join(data_root_dir, 'video', f'{file_id}.mp4')
         output_csv = os.path.join(data_root_dir, 'out', f'{file_id}.csv')
         output_2dkeypoint_folder = os.path.join(data_root_dir, 'out', '2d')
-        output_2dkeypoint_path = os.path.join(data_root_dir, 'out', '2d', f'{file_id}.mp4.npz')
+        # output_2dkeypoint_path = os.path.join(data_root_dir, 'out', '2d', f'{file_id}.mp4.npz')
         output_3dkeypoint_folder = os.path.join(data_root_dir, 'out', '3d')
         output_3dkeypoint_path = os.path.join(data_root_dir, 'out', '3d', f'{file_id}.mp4.npy')
         meta_custom_dataset_path = os.path.join(data_root_dir, 'out', f'{file_id}-custom-dataset.npz')
         output_raw_turn_time_prediction_path = os.path.join(data_root_dir, 'out', f'{file_id}-tt.pickle')
         output_shown_mp4_path = os.path.join(data_root_dir, 'out', 'render.mp4')
         output_detectron_mp4_path = os.path.join(data_root_dir, 'out', 'render-detectron.mp4')
-        output_gait_folder = os.path.join(data_root_dir, 'out', f'{file_id}-rgait-output/')
+        # output_gait_folder = os.path.join(data_root_dir, 'out', f'{file_id}-rgait-output/')
 
         # convert to avi
         run_container(
@@ -339,7 +342,10 @@ class SVOGaitAnalyzer(Analyzer):
         try:
             gait_folder_path = os.path.join(data_root_dir, 'out', 'zGait')
             shutil.copytree('algorithms/gait_basic/zGait/', gait_folder_path)
-            shutil.copyfile(meta_csv_path, os.path.join(gait_folder_path, 'input', '2001-01-01-1', '2001-01-01-1-1.csv'))
+            shutil.copyfile(
+                meta_csv_path,
+                os.path.join(gait_folder_path, 'input', '2001-01-01-1', '2001-01-01-1-1.csv'),
+            )
             os.system(f'cd {gait_folder_path} && Rscript gait_batch.R input/20010101.csv')
             shutil.copyfile(os.path.join(gait_folder_path, 'output/2001-01-01-1/2001-01-01-1.csv'), output_csv)
             replace_in_filenames(gait_folder_path, '2001-01-01-1', file_id)
@@ -383,14 +389,13 @@ class SVOGaitAnalyzer(Analyzer):
             right_sw = table['right.stride.wt.mu']
             left_st = table['left.stride.t.mu']
             right_st = table['right.stride.t.mu']
-            #tt = table['turn.t']
+            # tt = table['turn.t']
             cadence = table['cadence']
             velocity = table['velocity']
 
             sl = avg(left_sl, right_sl, left_n, right_n)
             sw = avg(left_sw, right_sw, left_n, right_n)
             st = avg(left_st, right_st, left_n, right_n)
-            #print(sl, sw, st, cadence, velocity, tt)
         except Exception as e:
             print(e)
         try:
@@ -404,7 +409,7 @@ class SVOGaitAnalyzer(Analyzer):
                 draw_keypoint=False
             )
             # browser mp4v encoding issue -> convert to h264
-            os.system(f'ffmpeg -y -i {output_shown_mp4_path_temp} -movflags +faststart -vcodec libx264 -f mp4 {output_shown_mp4_path}')
+            os.system(f'ffmpeg -y -i {output_shown_mp4_path_temp} -movflags +faststart -vcodec libx264 -f mp4 {output_shown_mp4_path}')  # noqa
             os.system(f'rm {output_shown_mp4_path_temp}')
 
             # detectron + turing; draw detectron by meta_custom_dataset_path

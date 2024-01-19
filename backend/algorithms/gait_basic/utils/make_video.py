@@ -29,10 +29,8 @@ def render(data_root_dir: str):
     with open(tt_pickle_path, 'rb') as handle:
         raw_tt = pickle.load(handle)
 
-    df = pd.read_csv(csv_path, header=0)
-    raw_df = pd.read_csv(raw_csv_path, names=["time", "left.y", "left.x", "left.dt", "right.y", "right.x", "right.dt"])
-
-    segmentations = raw_df[['time']].join(df[['time', 'step.leg']], lsuffix='time', rsuffix='time').fillna('-')['step.leg'].values
+    df = pd.read_csv(csv_path, header=0)  # noqa
+    raw_df = pd.read_csv(raw_csv_path, names=["time", "left.y", "left.x", "left.dt", "right.y", "right.x", "right.dt"])  # noqa
 
     kepoints = np.load(keypoint_path, allow_pickle=True)
 
@@ -50,12 +48,11 @@ def render(data_root_dir: str):
     fig, ax = plt.subplots(figsize=(image_width / dpi, image_height / dpi))
     fig.subplots_adjust(left=0, bottom=0, right=1, top=1, wspace=None, hspace=None)
 
-
     n = len(kepoints.f.keypoints)
     with writer.saving(fig, output_video_path, dpi=dpi):
         for frame_id in range(n):
             ax.clear()
-    
+
             ax.imshow(frames[frame_id][:, :, ::-1])
             xx = kepoints.f.keypoints[frame_id][1].reshape(-1, 17)[0, :]
             yy = kepoints.f.keypoints[frame_id][1].reshape(-1, 17)[1, :]
@@ -64,27 +61,35 @@ def render(data_root_dir: str):
                 y=yy,
                 s=15,
                 color='crimson')
-            ax.plot([xx[10], xx[8], xx[6], xx[5], xx[7], xx[9]], [yy[10], yy[8], yy[6], yy[5], yy[7], yy[9]], color='crimson')
+            ax.plot(
+                [xx[10], xx[8], xx[6], xx[5], xx[7], xx[9]], [yy[10], yy[8], yy[6], yy[5], yy[7], yy[9]],
+                color='crimson',
+            )
             ax.plot([xx[6], xx[12], xx[14], xx[16]], [yy[6], yy[12], yy[14], yy[16]], color='crimson')
             ax.plot([xx[5], xx[11], xx[13], xx[15]], [yy[5], yy[11], yy[13], yy[15]], color='crimson')
             ax.plot([xx[12], xx[11]], [yy[12], yy[11]], color='crimson')
-            
+
             # Annotate the current frame type
-            #current_frame_type = segmentations[frame_id]
+            # current_frame_type = segmentations[frame_id]
             # if current_frame_type == '-':
             #     current_frame_type = 'none'
             current_frame_type = 'walking'
             if raw_tt[frame_id] == 1:
                 current_frame_type = 'turning'
-            ax.annotate(current_frame_type, (100, 200), color='white', bbox=dict(facecolor='crimson', edgecolor='black'))
+            ax.annotate(
+                current_frame_type,
+                (100, 200),
+                color='white',
+                bbox=dict(facecolor='crimson', edgecolor='black'),
+            )
 
             ax.axis('off')
 
             writer.grab_frame()
 
 
-def gen_pairs(l: t.List[int]):
-    pairs = [(l[i], l[i + 1]) for i in range(len(l) - 1)]
+def gen_pairs(keypoint_idx_list: t.List[int]):
+    pairs = [(keypoint_idx_list[i], keypoint_idx_list[i + 1]) for i in range(len(keypoint_idx_list) - 1)]
     return pairs
 
 
@@ -120,23 +125,47 @@ def new_render(
         if draw_keypoint:
             for point in keypoints[frame_id]:
                 cv2.circle(frame, (int(point[0]), int(point[1])), 10, (0, 0, 255), -1)  # red color
-            
-            for (from_idx, to_idx) in gen_pairs([10, 8, 6, 5, 7, 9]):
-                cv2.line(frame, tuple(keypoints[frame_id][from_idx].astype(int)), tuple(keypoints[frame_id][to_idx].astype(int)), (0, 0, 255), 5)
 
-            for (from_idx, to_idx) in gen_pairs([6, 12 ,14, 16]):
-                cv2.line(frame, tuple(keypoints[frame_id][from_idx].astype(int)), tuple(keypoints[frame_id][to_idx].astype(int)), (0, 0, 255), 5)
-            
-            for (from_idx, to_idx) in gen_pairs([5, 11 ,13 ,15]):
-                cv2.line(frame, tuple(keypoints[frame_id][from_idx].astype(int)), tuple(keypoints[frame_id][to_idx].astype(int)), (0, 0, 255), 5)
-            
+            for (from_idx, to_idx) in gen_pairs([10, 8, 6, 5, 7, 9]):
+                cv2.line(
+                    frame,
+                    tuple(keypoints[frame_id][from_idx].astype(int)),
+                    tuple(keypoints[frame_id][to_idx].astype(int)),
+                    (0, 0, 255),
+                    5,
+                )
+
+            for (from_idx, to_idx) in gen_pairs([6, 12, 14, 16]):
+                cv2.line(
+                    frame,
+                    tuple(keypoints[frame_id][from_idx].astype(int)),
+                    tuple(keypoints[frame_id][to_idx].astype(int)),
+                    (0, 0, 255),
+                    5,
+                )
+
+            for (from_idx, to_idx) in gen_pairs([5, 11, 13, 15]):
+                cv2.line(
+                    frame,
+                    tuple(keypoints[frame_id][from_idx].astype(int)),
+                    tuple(keypoints[frame_id][to_idx].astype(int)),
+                    (0, 0, 255),
+                    5,
+                )
+
             for (from_idx, to_idx) in gen_pairs([12, 11]):
-                cv2.line(frame, tuple(keypoints[frame_id][from_idx].astype(int)), tuple(keypoints[frame_id][to_idx].astype(int)), (0, 0, 255), 5)
-        
+                cv2.line(
+                    frame,
+                    tuple(keypoints[frame_id][from_idx].astype(int)),
+                    tuple(keypoints[frame_id][to_idx].astype(int)),
+                    (0, 0, 255),
+                    5,
+                )
+
         current_frame_type = 'walking'
         if raw_tt[frame_id] == 1:
             current_frame_type = 'turning'
-        
+
         # add white text on a red rectangle
         text = current_frame_type
         font = cv2.FONT_HERSHEY_SIMPLEX
