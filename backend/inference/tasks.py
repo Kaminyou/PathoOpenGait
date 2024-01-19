@@ -1,7 +1,6 @@
 import os
 
 from celery import Celery
-from celery.exceptions import MaxRetriesExceededError
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -36,7 +35,7 @@ def inference_gait_task(self, submitUUID: str):
 
     dataType = request_instance.dataType
     modelName = request_instance.modelName
-    trialID =  request_instance.trialID
+    trialID = request_instance.trialID
 
     try:
         inference_gait(
@@ -62,4 +61,3 @@ def inference_gait_task(self, submitUUID: str):
         return True
 
     return True
-

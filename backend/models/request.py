@@ -27,7 +27,7 @@ class RequestModel(db.Model):
     @classmethod
     def find_by_account(cls, account: str) -> t.List['RequestModel']:
         return cls.query.filter_by(account=account).order_by(RequestModel.dateUpload.desc()).all()
-    
+
     @classmethod
     def find_by_account_and_sort_by_exp_date(cls, account: str) -> t.List['RequestModel']:
         return cls.query.filter_by(account=account).order_by(RequestModel.date.desc()).all()
