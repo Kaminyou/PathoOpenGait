@@ -22,16 +22,16 @@ def avg(l, r, nl, nr):
     return (l * nl + r * nr) / (nl + nr)
 
 
-def replace_in_filenames(path, old_string, new_string):
-    for root, dirs, files in os.walk(path):
-        for _dir in dirs:
-            if old_string in _dir:
-                new_dir = _dir.replace(old_string, new_string)
-                os.rename(os.path.join(root, _dir), os.path.join(root, new_dir))
+def replace_in_filenames(path: str, old_string: str, new_string: str) -> None:
+    for root, dirs, files in os.walk(path, topdown=False):
         for file in files:
             if old_string in file:
                 new_file = file.replace(old_string, new_string)
                 os.rename(os.path.join(root, file), os.path.join(root, new_file))
+        for _dir in dirs:
+            if old_string in _dir:
+                new_dir = _dir.replace(old_string, new_string)
+                os.rename(os.path.join(root, _dir), os.path.join(root, new_dir))
 
 
 class BasicGaitAnalyzer(Analyzer):
