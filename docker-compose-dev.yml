@@ -4,10 +4,10 @@ services:
     build: 
       context: ./frontend/
       dockerfile: frontend.dev.Dockerfile
-    container_name: gait-web-frontend
+    container_name: gait-web-frontend-dev
     working_dir: /root/frontend
     ports:
-      - 31000:3000
+      - 51000:3000
     depends_on:
       - backend
     stdin_open: true
@@ -19,7 +19,7 @@ services:
     build:
       context: ./backend/
       dockerfile: backend.Dockerfile
-    container_name: gait-web-backend
+    container_name: gait-web-backend-dev
     environment:
       - FLASK_DEBUG=1
       - APP_SETTINGS=project.server.config.DevelopmentConfig
@@ -27,6 +27,7 @@ services:
       - SQLALCHEMY_DATABASE_URI=${SQLALCHEMY_DATABASE_URI}
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - MOUNT=${PWD}/backend
     working_dir: /root/backend
     deploy:
       resources:
@@ -36,30 +37,32 @@ services:
     stdin_open: true
     tty: true
     ports:
-      - 32000:5000
+      - 52000:5000
     volumes:
       - ./backend:/root/backend
+      - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - db
   db:
     image: mysql:8
-    container_name: gait-web-db
+    container_name: gait-web-db-dev
     command: mysqld --default-authentication-plugin=mysql_native_password
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     ports:
-      - 33000:3306
+      - 53000:3306
     volumes:
       - ./database/sql:/docker-entrypoint-initdb.d
   redis:
     image: redis:6-alpine
-    container_name: gait-web-redis
+    container_name: gait-web-redis-dev
   worker:
     image: gait-web-backend:latest
-    container_name: gait-web-worker
+    container_name: gait-web-worker-dev
     command: celery --app inference.tasks.celery worker -P solo --loglevel=info --logfile=inference/logs/celery.log
     volumes:
       - ./backend:/root/backend
+      - /var/run/docker.sock:/var/run/docker.sock
     working_dir: /root/backend
     environment:
       - FLASK_DEBUG=1
@@ -69,6 +72,7 @@ services:
       - SQLALCHEMY_DATABASE_URI=${SQLALCHEMY_DATABASE_URI}
       - RESULT_DIR=/root/backend/data/
       - CUDA_DEVICE_ORDER=PCI_BUS_ID
+      - MOUNT=${PWD}/backend
     deploy:
       resources:
         reservations:
@@ -81,11 +85,11 @@ services:
       - redis
   dashboard:
     image: gait-web-backend:latest
-    container_name: gait-web-dashboard
+    container_name: gait-web-dashboard-dev
     working_dir: /root/backend
     command: celery --app inference.tasks.celery flower --port=5555 --broker=redis://redis:6379/0
     ports:
-      - 24000:5555
+      - 54000:5555
     volumes:
       - ./backend:/root/backend
     environment:
