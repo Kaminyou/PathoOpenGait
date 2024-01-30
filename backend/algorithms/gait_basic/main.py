@@ -36,6 +36,17 @@ def replace_in_filenames(path: str, old_string: str, new_string: str) -> None:
                 os.rename(os.path.join(root, _dir), os.path.join(root, new_dir))
 
 
+def add_newline_if_missing(file_path: str):
+    # some txt (timeframe) has no \n in the last line and trigger error in depth sensing cpp
+    with open(file_path, 'r+') as file:
+        file_contents = file.read()
+        if file_contents.endswith('\n'):
+            return True
+        else:
+            file.write('\n')
+            return False
+
+
 class BasicGaitAnalyzer(Analyzer):
     def __init__(
         self,
@@ -217,6 +228,9 @@ class SVOGaitAnalyzer(Analyzer):
         output_shown_mp4_path = os.path.join(data_root_dir, 'out', 'render.mp4')
         output_detectron_mp4_path = os.path.join(data_root_dir, 'out', 'render-detectron.mp4')
         # output_gait_folder = os.path.join(data_root_dir, 'out', f'{file_id}-rgait-output/')
+    
+        if not add_newline_if_missing(source_txt_path):
+            print('add a new line to txt')
 
         # convert to avi
         run_container(
