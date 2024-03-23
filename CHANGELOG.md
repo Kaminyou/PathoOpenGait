@@ -1,4 +1,8 @@
 # Changelog
+## v0.2.1
+### Improvement
+- Add an automatical timestamp txt fixing logic
+
 ## v0.2.0
 ### Improvement
 - Enable raw svo and txt uploading
