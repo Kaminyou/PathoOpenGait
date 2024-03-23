@@ -180,3 +180,5 @@ def new_render(
         cv2.putText(frame, text, (100, 200), font, font_scale, (255, 255, 255), font_thickness, cv2.LINE_AA)
 
         out.write(frame)
+    out.release()
+    del out
