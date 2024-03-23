@@ -2,6 +2,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Kaminyou/PathoOpenGait/blob/main/LICENSE)
 ![linting workflow](https://github.com/Kaminyou/PathoOpenGait/actions/workflows/main.yml/badge.svg)
 # PathoOpenGait
+#### PathoOpenGait: Pathological Gait Analysis With an Open-Source Cloud-Enabled Platform Empowered by Semi-Supervised Learning
+For the details, please refer to [our papar](https://ieeexplore.ieee.org/document/10349936/) published in *IEEE journal of biomedical and health informatics*.
 ![image](./misc/pathoopengait-teaser.png)
 
 ## System design (Microservice architecture)
@@ -63,3 +65,16 @@ MAPPING = {
 
 ```
 7. Finish. If you need to modify the input interface or anything else, please directly modify those files.
+
+## Citation
+```
+@article{ho2024pathological,
+  title={Pathological Gait Analysis With an Open-Source Cloud-Enabled Platform Empowered by Semi-Supervised Learning-PathoOpenGait},
+  author={Ho, Ming-Yang and Kuo, Ming-Che and Chen, Ciao-Sin and Wu, Ruey-Meei and Chuang, Ching-Chi and Shih, Chi-Sheng and Tseng, Yufeng Jane},
+  journal={IEEE journal of biomedical and health informatics},
+  volume={28},
+  number={2},
+  pages={1066--1077},
+  year={2024}
+}
+```
