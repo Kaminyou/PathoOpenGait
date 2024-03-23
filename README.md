@@ -1,3 +1,5 @@
+![version](https://img.shields.io/badge/version-0.2.1-red)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Kaminyou/PathoOpenGait/blob/main/LICENSE)
 ![linting workflow](https://github.com/Kaminyou/PathoOpenGait/actions/workflows/main.yml/badge.svg)
 # PathoOpenGait
 ![image](./misc/pathoopengait-teaser.png)
