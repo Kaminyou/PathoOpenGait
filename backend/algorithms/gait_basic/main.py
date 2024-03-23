@@ -264,9 +264,6 @@ class SVOGaitAnalyzer(Analyzer):
         if not add_newline_if_missing(source_txt_path):
             print('add a new line to txt')
 
-        if not add_newline_if_missing(source_txt_path):
-            print('add a new line to txt')
-
         # convert to avi
         run_container(
             image='zed-env:latest',
