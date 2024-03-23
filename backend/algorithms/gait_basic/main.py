@@ -260,6 +260,9 @@ class SVOGaitAnalyzer(Analyzer):
         output_shown_mp4_path = os.path.join(data_root_dir, 'out', 'render.mp4')
         output_detectron_mp4_path = os.path.join(data_root_dir, 'out', 'render-detectron.mp4')
         # output_gait_folder = os.path.join(data_root_dir, 'out', f'{file_id}-rgait-output/')
+    
+        if not add_newline_if_missing(source_txt_path):
+            print('add a new line to txt')
 
         if not add_newline_if_missing(source_txt_path):
             print('add a new line to txt')
