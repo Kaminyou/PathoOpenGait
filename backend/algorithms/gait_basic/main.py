@@ -260,7 +260,11 @@ class SVOGaitAnalyzer(Analyzer):
         output_shown_mp4_path = os.path.join(data_root_dir, 'out', 'render.mp4')
         output_detectron_mp4_path = os.path.join(data_root_dir, 'out', 'render-detectron.mp4')
         # output_gait_folder = os.path.join(data_root_dir, 'out', f'{file_id}-rgait-output/')
-    
+
+        # additional black background
+        meta_rendered_black_background_mp4_path = os.path.join(data_root_dir, 'out', f'{file_id}-rendered-black-background.mp4')
+        output_shown_black_background_mp4_path = os.path.join(data_root_dir, 'out', 'render-black-background.mp4')
+
         if not add_newline_if_missing(source_txt_path):
             print('add a new line to txt')
 
@@ -351,6 +355,25 @@ class SVOGaitAnalyzer(Analyzer):
                 f'--json-path "{meta_json_path}" '
                 f'--targeted-person-bboxes-path "{meta_targeted_person_bboxes_path}" '
                 f'--rendered-mp4-path "{meta_rendered_mp4_path}"'
+            ),
+            volumes={
+                MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
+            },
+            working_dir=WORK_DIR,
+            device_requests=[
+                docker.types.DeviceRequest(device_ids=['0'], capabilities=[['gpu']]),
+            ],
+        )
+
+        # render_removed_result but black backgound
+        run_container(
+            image='zed-env:latest',
+            command=(
+                f'python3 /root/result_render.py --mp4-path "{meta_mp4_path}" '
+                f'--json-path "{meta_json_path}" '
+                f'--targeted-person-bboxes-path "{meta_targeted_person_bboxes_path}" '
+                f'--rendered-mp4-path "{meta_rendered_black_background_mp4_path}" '
+                f'--draw-all-keypoints --draw-black-background'
             ),
             volumes={
                 MOUNT: {'bind': WORK_DIR, 'mode': 'rw'},
@@ -459,6 +482,18 @@ class SVOGaitAnalyzer(Analyzer):
             # browser mp4v encoding issue -> convert to h264
             os.system(f'ffmpeg -y -i {output_shown_mp4_path_temp} -movflags +faststart -vcodec libx264 -f mp4 {output_shown_mp4_path}')  # noqa
             os.system(f'rm {output_shown_mp4_path_temp}')
+
+            # for black background
+            output_shown_black_background_mp4_path_temp = output_shown_black_background_mp4_path + '.tmp.mp4'
+            new_render(
+                video_path=meta_rendered_black_background_mp4_path,
+                detectron_custom_dataset_path=meta_custom_dataset_path,
+                tt_pickle_path=output_raw_turn_time_prediction_path,
+                output_video_path=output_shown_black_background_mp4_path_temp,
+                draw_keypoint=False
+            )
+            os.system(f'ffmpeg -y -i {output_shown_black_background_mp4_path_temp} -movflags +faststart -vcodec libx264 -f mp4 {output_shown_black_background_mp4_path}')  # noqa
+            os.system(f'rm {output_shown_black_background_mp4_path_temp}')
 
             # detectron + turing; draw detectron by meta_custom_dataset_path
             new_render(
