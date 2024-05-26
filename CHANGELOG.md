@@ -1,4 +1,8 @@
 # Changelog
+## v0.2.2
+### New features
+- To protect patient's privacy, the default video change to a black background one with full keypoints shown. The setting can be changed by modify the `get_video` api in `backend/routers/user.py`
+
 ## v0.2.1
 ### Improvement
 - Add an automatical timestamp txt fixing logic

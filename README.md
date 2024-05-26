@@ -26,6 +26,11 @@ For the details, please refer to [our papar](https://ieeexplore.ieee.org/documen
     ./backend/algorithms/gait_basic/VideoPose3D/checkpoint/pretrained_h36m_detectron_coco.bin
     ./backend/algorithms/gait_basic/gait_study_semi_turn_time/weights/semi_vanilla_v2/epoch_94.pth
     ```
+5. (Optional) By default, the video will be provided with a black backgound and full keypoints. If you would like to show the patients' body and the surrounding, please modify `backend/routers/user.py`
+    ```python
+    # video_path = f'data/{video_uuid}/out/render-black-background.mp4'  # default one
+    video_path = f'data/{video_uuid}/out/render.mp4'  # change to this one
+    ```
 5. Execute
     ```
     $ docker-compose up --build -d
