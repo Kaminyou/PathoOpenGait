@@ -1,9 +1,19 @@
 ![version](https://img.shields.io/badge/version-0.2.1-red)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Kaminyou/PathoOpenGait/blob/main/LICENSE)
 ![linting workflow](https://github.com/Kaminyou/PathoOpenGait/actions/workflows/main.yml/badge.svg)
-# PathoOpenGait
-#### PathoOpenGait: Pathological Gait Analysis With an Open-Source Cloud-Enabled Platform Empowered by Semi-Supervised Learning
-For the details, please refer to [our papar](https://ieeexplore.ieee.org/document/10349936/) published in *IEEE journal of biomedical and health informatics*.
+
+<div align="center">
+
+<h2>IEEE JBHI (2024)</h2>
+<h1>PathoOpenGait</h1>
+
+[[`Paper (official)`](https://ieeexplore.ieee.org/document/10349936/)]
+</div>
+
+## PathoOpenGait: Pathological Gait Analysis With an Open-Source Cloud-Enabled Platform Empowered by Semi-Supervised Learning
+### 🎉 News
+We have invented ***Movement Anywhere*** and published in IEEE JBHI (2026). Movement Anywhere is an extension of PathoOpenGait and further supports 2D video only scenario. Please don't forget to check our latest [Movement Anywhere here](https://github.com/Kaminyou/Movement-Anywhere).
+
 ![image](./misc/pathoopengait-teaser.png)
 
 ## System design (Microservice architecture)
